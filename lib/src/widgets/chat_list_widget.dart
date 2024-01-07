@@ -169,13 +169,13 @@ class _ChatListWidgetState extends State<ChatListWidget>
           builder: (_, isNextPageLoading, child) {
             if (isNextPageLoading &&
                 (featureActiveConfig?.enablePagination ?? false)) {
-              return SizedBox(
-                height: Scaffold.of(context).appBarMaxHeight,
-                child: Center(
-                  child:
-                      widget.loadingWidget ?? const CircularProgressIndicator(),
-                ),
-              );
+              return widget.loadingWidget ??
+                  SizedBox(
+                    height: Scaffold.of(context).appBarMaxHeight,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
             } else {
               return const SizedBox.shrink();
             }

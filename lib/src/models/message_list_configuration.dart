@@ -33,6 +33,7 @@ class ChatBackgroundConfiguration {
 
   /// Provides padding of chat view.
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? listViewPadding;
 
   /// Provides margin of chat view.
   final EdgeInsetsGeometry? margin;
@@ -80,6 +81,7 @@ class ChatBackgroundConfiguration {
     this.groupedListOrder = GroupedListOrder.ASC,
     this.sortEnable = false,
     this.padding,
+    this.listViewPadding,
     this.margin,
     this.messageTimeTextStyle,
     this.messageTimeIconColor,

@@ -79,9 +79,9 @@ class _ChatScreenState extends State<ChatScreen> {
         chatController: _chatController,
         onSendTap: _onSendTap,
         featureActiveConfig: const FeatureActiveConfig(
-          lastSeenAgoBuilderVisibility: true,
-          receiptsBuilderVisibility: true,
-        ),
+            lastSeenAgoBuilderVisibility: true,
+            receiptsBuilderVisibility: true,
+            enablePagination: true),
         chatViewState: ChatViewState.hasMessages,
         chatViewStateConfig: ChatViewStateConfiguration(
           loadingWidgetConfig: ChatViewStateWidgetConfiguration(
@@ -127,7 +127,90 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+        loadMoreData: () async {
+          await Future.delayed(const Duration(seconds: 5));
+          _chatController.loadMoreData([
+            Message(
+              id: '1',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '2',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '3',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '4',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '5',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '6',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '7',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '8',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '9',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+            Message(
+              id: '10',
+              createdAt: DateTime.now(),
+              message: 'Hello',
+              sendBy: '1',
+              messageType: MessageType.text,
+            ),
+          ]);
+        },
+        loadingWidget: const Padding(
+          padding: EdgeInsets.only(bottom: 20),
+          child: LinearProgressIndicator(
+            color: Colors.white,
+            backgroundColor: Colors.black,
+          ),
+        ),
         chatBackgroundConfig: ChatBackgroundConfiguration(
+          listViewPadding: const EdgeInsets.symmetric(vertical: 16),
           messageTimeIconColor: theme.messageTimeIconColor,
           messageTimeTextStyle: TextStyle(color: theme.messageTimeTextColor),
           defaultGroupSeparatorConfig: DefaultGroupSeparatorConfiguration(
