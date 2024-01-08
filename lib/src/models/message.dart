@@ -90,6 +90,11 @@ class Message {
     _status.value = messageStatus;
   }
 
+  @override
+  String toString() {
+    return 'Message(id: $id, key: $key, message: $message, createdAt: $createdAt, sendBy: $sendBy, replyMessage: $replyMessage, reaction: $reaction, messageType: $messageType, voiceMessageDuration: $voiceMessageDuration, status: $status)';
+  }
+
   factory Message.fromJson(Map<String, dynamic> json) => Message(
       id: json["id"],
       message: json["message"],
