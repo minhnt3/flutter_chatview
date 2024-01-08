@@ -62,7 +62,7 @@ class ChatController {
     required this.scrollController,
     required this.chatUsers,
   }) {
-    _allMessages = initialMessageList;
+    _allMessages.addAll(initialMessageList);
   }
 
   /// Represents message stream of chat
