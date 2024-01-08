@@ -359,22 +359,48 @@ class _ChatScreenState extends State<ChatScreen> {
     MessageType messageType,
   ) {
     final id = int.parse(Data.messageList.last.id) + 1;
-    _chatController.addMessage(
-      Message(
-        id: id.toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
+    _chatController.plusAllMessages(
+      [
+        Message(
+          id: id.toString(),
+          createdAt: DateTime.now(),
+          message: message,
+          sendBy: currentUser.id,
+          replyMessage: replyMessage,
+          messageType: messageType,
+        ),
+        Message(
+          id: (id + 1).toString(),
+          createdAt: DateTime.now(),
+          message: message,
+          sendBy: currentUser.id,
+          replyMessage: replyMessage,
+          messageType: messageType,
+        ),
+        Message(
+          id: (id + 2).toString(),
+          createdAt: DateTime.now(),
+          message: message,
+          sendBy: currentUser.id,
+          replyMessage: replyMessage,
+          messageType: messageType,
+        ),
+        Message(
+          id: (id + 3).toString(),
+          createdAt: DateTime.now(),
+          message: message,
+          sendBy: currentUser.id,
+          replyMessage: replyMessage,
+          messageType: messageType,
+        ),
+      ],
     );
     Future.delayed(const Duration(milliseconds: 300), () {
-      _chatController.initialMessageList.last.setStatus =
+      _chatController.allMessageList.last.setStatus =
           MessageStatus.undelivered;
     });
     Future.delayed(const Duration(seconds: 1), () {
-      _chatController.initialMessageList.last.setStatus = MessageStatus.read;
+      _chatController.allMessageList.last.setStatus = MessageStatus.read;
     });
   }
 

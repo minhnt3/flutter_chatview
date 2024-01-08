@@ -102,7 +102,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
   bool get isMessageBySender => widget.message.sendBy == currentUser?.id;
 
   bool get isLastMessage =>
-      chatController?.initialMessageList.last.id == widget.message.id;
+      chatController?.allMessageList.last.id == widget.message.id;
 
   ProfileCircleConfiguration? get profileCircleConfig =>
       widget.profileCircleConfig;
@@ -269,7 +269,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
     } else if (showReceipts == ShowReceiptsIn.lastMessage && isLastMessage) {
       return ValueListenableBuilder(
           valueListenable:
-              chatController!.initialMessageList.last.statusNotifier,
+              chatController!.allMessageList.last.statusNotifier,
           builder: (context, value, child) {
             if (ChatViewInheritedWidget.of(context)
                     ?.featureActiveConfig

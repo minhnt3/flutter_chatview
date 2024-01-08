@@ -28,6 +28,7 @@ import '../models/models.dart';
 class ChatController {
   /// Represents initial message list in chat which can be add by user.
   List<Message> initialMessageList;
+  List<Message> _allMessages = [];
 
   ScrollController scrollController;
 
@@ -60,10 +61,14 @@ class ChatController {
     required this.initialMessageList,
     required this.scrollController,
     required this.chatUsers,
-  });
+  }) {
+    _allMessages = initialMessageList;
+  }
 
   /// Represents message stream of chat
   StreamController<List<Message>> messageStreamController = StreamController();
+
+  List<Message> get allMessageList => _allMessages;
 
   /// Used to dispose stream.
   void dispose() => messageStreamController.close();
@@ -71,7 +76,8 @@ class ChatController {
   /// Used to add message in message list.
   void addMessage(Message message) {
     initialMessageList.add(message);
-    messageStreamController.sink.add(initialMessageList);
+    _allMessages.add(message);
+    messageStreamController.sink.add(_allMessages);
   }
 
   /// Function for setting reaction on specific chat bubble
@@ -81,9 +87,9 @@ class ChatController {
     required String userId,
   }) {
     final message =
-        initialMessageList.firstWhere((element) => element.id == messageId);
+        _allMessages.firstWhere((element) => element.id == messageId);
     final reactedUserIds = message.reaction.reactedUserIds;
-    final indexOfMessage = initialMessageList.indexOf(message);
+    final indexOfMessage = _allMessages.indexOf(message);
     final userIndex = reactedUserIds.indexOf(userId);
     if (userIndex != -1) {
       if (message.reaction.reactions[userIndex] == emoji) {
@@ -96,7 +102,7 @@ class ChatController {
       message.reaction.reactions.add(emoji);
       message.reaction.reactedUserIds.add(userId);
     }
-    initialMessageList[indexOfMessage] = Message(
+    _allMessages[indexOfMessage] = Message(
       id: messageId,
       message: message.message,
       createdAt: message.createdAt,
@@ -106,7 +112,7 @@ class ChatController {
       messageType: message.messageType,
       status: message.status,
     );
-    messageStreamController.sink.add(initialMessageList);
+    messageStreamController.sink.add(_allMessages);
   }
 
   /// Function to scroll to last messages in chat view
@@ -123,10 +129,25 @@ class ChatController {
   void loadMoreData(List<Message> messageList) {
     /// Here, we have passed 0 index as we need to add data before first data
     initialMessageList.insertAll(0, messageList);
-    messageStreamController.sink.add(initialMessageList);
+    _allMessages.insertAll(0, messageList);
+    messageStreamController.sink.add(_allMessages);
+  }
+
+  void plusAllMessages(List<Message> messageList) {
+    _allMessages = initialMessageList.append(messageList).toList();
+    messageStreamController.sink.add(_allMessages);
   }
 
   /// Function for getting ChatUser object from user id
   ChatUser getUserFromId(String userId) =>
       chatUsers.firstWhere((element) => element.id == userId);
+}
+
+extension IterableAppend<E> on Iterable<E> {
+  /// Returns a new lazy [Iterable] containing all elements of the given
+  /// [elements] collection and then all elements of this collection.
+  Iterable<E> append(Iterable<E> elements) sync* {
+    yield* this;
+    yield* elements;
+  }
 }
