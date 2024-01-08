@@ -47,6 +47,7 @@ class ChatBubbleWidget extends StatefulWidget {
     this.messageConfig,
     this.onReplyTap,
     this.shouldHighlight = false,
+    this.isLastMessage = false,
   }) : super(key: key);
 
   /// Represent current instance of message.
@@ -91,6 +92,8 @@ class ChatBubbleWidget extends StatefulWidget {
 
   /// Flag for when user tap on replied message and highlight actual message.
   final bool shouldHighlight;
+
+  final bool isLastMessage;
 
   @override
   State<ChatBubbleWidget> createState() => _ChatBubbleWidgetState();
@@ -246,6 +249,20 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
     }
   }
 
+  // TODO(minh): refactor this function later
+  Widget getRecieptIcons(MessageStatus status) {
+    return switch (status) {
+      MessageStatus.read => const SizedBox(),
+      MessageStatus.delivered => isLastMessage
+          ? const Icon(Icons.check_circle, size: 18, color: Colors.black)
+          : const SizedBox(),
+      MessageStatus.undelivered =>
+        const Icon(Icons.error_rounded, size: 18, color: Colors.red),
+      MessageStatus.pending =>
+        const Icon(Icons.circle_outlined, size: 18, color: Colors.black),
+    };
+  }
+
   Widget getReciept() {
     final showReceipts = widget.chatBubbleConfig?.outgoingChatBubbleConfig
             ?.receiptsWidgetConfig?.showReceiptsIn ??
@@ -261,15 +278,14 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
             return widget.chatBubbleConfig?.outgoingChatBubbleConfig
                     ?.receiptsWidgetConfig?.receiptsBuilder
                     ?.call(value) ??
-                sendMessageAnimationBuilder(value);
+                getRecieptIcons(value);
           }
           return const SizedBox();
         },
       );
     } else if (showReceipts == ShowReceiptsIn.lastMessage && isLastMessage) {
       return ValueListenableBuilder(
-          valueListenable:
-              chatController!.allMessageList.last.statusNotifier,
+          valueListenable: chatController!.allMessageList.last.statusNotifier,
           builder: (context, value, child) {
             if (ChatViewInheritedWidget.of(context)
                     ?.featureActiveConfig
@@ -278,9 +294,9 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
               return widget.chatBubbleConfig?.outgoingChatBubbleConfig
                       ?.receiptsWidgetConfig?.receiptsBuilder
                       ?.call(value) ??
-                  sendMessageAnimationBuilder(value);
+                  getRecieptIcons(value);
             }
-            return sendMessageAnimationBuilder(value);
+            return getRecieptIcons(value);
           });
     }
     return const SizedBox();

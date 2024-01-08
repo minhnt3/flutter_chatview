@@ -330,6 +330,7 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
                                 false
                             ? (replyId) => _onReplyTap(replyId, snapshot.data)
                             : null,
+                        isLastMessage: index == snapshot.data!.length - 1,
                       );
                     },
                   );

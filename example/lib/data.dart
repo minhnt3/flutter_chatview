@@ -9,7 +9,7 @@ class Data {
       message: "Hi!",
       createdAt: DateTime.now(),
       sendBy: '1', // userId of who sends the message
-      status: MessageStatus.read,
+      status: MessageStatus.undelivered,
     ),
     Message(
       id: '2',
@@ -76,7 +76,7 @@ class Data {
       message: "Done",
       createdAt: DateTime.now(),
       sendBy: '1',
-      status: MessageStatus.read,
+      status: MessageStatus.delivered,
       reaction: Reaction(
         reactions: [
           '\u{2764}',
@@ -104,14 +104,14 @@ class Data {
       messageType: MessageType.image,
       sendBy: '1',
       reaction: Reaction(reactions: ['\u{2764}'], reactedUserIds: ['2']),
-      status: MessageStatus.read,
+      status: MessageStatus.delivered,
     ),
     Message(
       id: '12',
       message: "🤩🤩",
       createdAt: DateTime.now(),
-      sendBy: '2',
-      status: MessageStatus.read,
+      sendBy: '1',
+      status: MessageStatus.delivered,
     ),
   ];
 }
