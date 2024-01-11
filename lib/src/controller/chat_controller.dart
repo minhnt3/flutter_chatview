@@ -22,12 +22,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 import '../models/models.dart';
 
 class ChatController {
   /// Represents initial message list in chat which can be add by user.
-  List<Message> initialMessageList;
   List<Message> _allMessages = [];
 
   ScrollController scrollController;
@@ -58,24 +58,20 @@ class ChatController {
   List<ChatUser> chatUsers;
 
   ChatController({
-    required this.initialMessageList,
     required this.scrollController,
     required this.chatUsers,
-  }) {
-    _allMessages.addAll(initialMessageList);
-  }
+  });
 
   /// Represents message stream of chat
   StreamController<List<Message>> messageStreamController = StreamController();
 
-  List<Message> get allMessageList => _allMessages;
+  List<Message> get messageList => _allMessages;
 
   /// Used to dispose stream.
   void dispose() => messageStreamController.close();
 
   /// Used to add message in message list.
   void addMessage(Message message) {
-    initialMessageList.add(message);
     _allMessages.add(message);
     messageStreamController.sink.add(_allMessages);
   }
@@ -128,19 +124,18 @@ class ChatController {
   /// Function for loading data while pagination.
   void loadMoreData(List<Message> messageList) {
     /// Here, we have passed 0 index as we need to add data before first data
-    initialMessageList.insertAll(0, messageList);
     _allMessages.insertAll(0, messageList);
     messageStreamController.sink.add(_allMessages);
   }
 
-  void plusAllMessages(List<Message> messageList) {
-    _allMessages = initialMessageList.append(messageList).toList();
+  set messageList(List<Message> messageList) {
+    _allMessages = messageList;
     messageStreamController.sink.add(_allMessages);
   }
 
   /// Function for getting ChatUser object from user id
-  ChatUser getUserFromId(String userId) =>
-      chatUsers.firstWhere((element) => element.id == userId);
+  ChatUser? getUserFromId(String userId) =>
+      chatUsers.firstWhereOrNull((element) => element.id == userId);
 }
 
 extension IterableAppend<E> on Iterable<E> {

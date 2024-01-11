@@ -120,7 +120,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
 
   ChatController get chatController => widget.chatController;
 
-  List<Message> get messageList => chatController.allMessageList;
+  List<Message> get messageList => chatController.messageList;
 
   ScrollController get scrollController => chatController.scrollController;
 
