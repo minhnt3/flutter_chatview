@@ -41,6 +41,7 @@ class ChatGroupedListWidget extends StatefulWidget {
     required this.onChatListTap,
     required this.onChatBubbleLongPress,
     required this.isEnableSwipeToSeeTime,
+    required this.onMoreTap,
     this.messageConfig,
     this.chatBubbleConfig,
     this.profileCircleConfig,
@@ -91,6 +92,8 @@ class ChatGroupedListWidget extends StatefulWidget {
   /// Provide flag for turn on/off to see message crated time view when user
   /// swipe whole chat.
   final bool isEnableSwipeToSeeTime;
+
+  final VoidCallBack onMoreTap;
 
   @override
   State<ChatGroupedListWidget> createState() => _ChatGroupedListWidgetState();
@@ -331,6 +334,7 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
                             ? (replyId) => _onReplyTap(replyId, snapshot.data)
                             : null,
                         isLastMessage: index == snapshot.data!.length - 1,
+                        onMoreTap: widget.onMoreTap,
                       );
                     },
                   );

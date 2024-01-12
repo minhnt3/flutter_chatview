@@ -54,8 +54,8 @@ const int opacity = 18;
 const double verticalPadding = 4.0;
 const double leftPadding2 = 5;
 const double horizontalPadding = 6;
-const double replyBorderRadius1 = 30;
-const double replyBorderRadius2 = 18;
+const double replyBorderRadius1 = 8;
+const double replyBorderRadius2 = 8;
 const double leftPadding3 = 12;
 const double textFieldBorderRadius = 27;
 

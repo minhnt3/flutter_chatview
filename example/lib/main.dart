@@ -349,6 +349,7 @@ class _ChatScreenState extends State<ChatScreen> {
         swipeToReplyConfig: SwipeToReplyConfiguration(
           replyIconColor: theme.swipeToReplyIconColor,
         ),
+        onMoreTap: () {},
       ),
     );
   }
@@ -396,8 +397,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ],
     );
     Future.delayed(const Duration(milliseconds: 300), () {
-      _chatController.allMessageList.last.setStatus =
-          MessageStatus.undelivered;
+      _chatController.allMessageList.last.setStatus = MessageStatus.undelivered;
     });
     Future.delayed(const Duration(seconds: 1), () {
       _chatController.allMessageList.last.setStatus = MessageStatus.read;

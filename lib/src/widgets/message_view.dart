@@ -37,6 +37,7 @@ class MessageView extends StatefulWidget {
     required this.isMessageBySender,
     required this.onLongPress,
     required this.isLongPressEnable,
+    required this.replyMessage,
     this.chatBubbleMaxWidth,
     this.inComingChatBubbleConfig,
     this.outgoingChatBubbleConfig,
@@ -93,6 +94,8 @@ class MessageView extends StatefulWidget {
   final ChatController? controller;
 
   final Function(int)? onMaxDuration;
+
+  final String replyMessage;
 
   @override
   State<MessageView> createState() => _MessageViewState();
@@ -212,6 +215,7 @@ class _MessageViewState extends State<MessageView>
                   return TextMessageView(
                     inComingChatBubbleConfig: widget.inComingChatBubbleConfig,
                     outgoingChatBubbleConfig: widget.outgoingChatBubbleConfig,
+                    replyMessage: widget.replyMessage,
                     isMessageBySender: widget.isMessageBySender,
                     message: widget.message,
                     chatBubbleMaxWidth: widget.chatBubbleMaxWidth,

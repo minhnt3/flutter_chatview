@@ -33,6 +33,7 @@ class TextMessageView extends StatelessWidget {
     Key? key,
     required this.isMessageBySender,
     required this.message,
+    required this.replyMessage,
     this.chatBubbleMaxWidth,
     this.inComingChatBubbleConfig,
     this.outgoingChatBubbleConfig,
@@ -65,6 +66,8 @@ class TextMessageView extends StatelessWidget {
   /// Allow user to set color of highlighted message.
   final Color? highlightColor;
 
+  final String replyMessage;
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -85,7 +88,7 @@ class TextMessageView extends StatelessWidget {
               EdgeInsets.fromLTRB(
                   5, 0, 6, message.reaction.reactions.isNotEmpty ? 15 : 2),
           decoration: BoxDecoration(
-            color: highlightMessage ? highlightColor : _color,
+            color: replyMessage.isNotEmpty ? Colors.transparent : _color,
             borderRadius: _borderRadius(textMessage),
           ),
           child: textMessage.isUrl
@@ -131,13 +134,19 @@ class TextMessageView extends StatelessWidget {
 
   BorderRadiusGeometry _borderRadius(String message) => isMessageBySender
       ? outgoingChatBubbleConfig?.borderRadius ??
-          (message.length < 37
-              ? BorderRadius.circular(replyBorderRadius1)
-              : BorderRadius.circular(replyBorderRadius2))
+          const BorderRadius.only(
+            topLeft: Radius.circular(replyBorderRadius1),
+            topRight: Radius.circular(replyBorderRadius1),
+            bottomLeft: Radius.circular(replyBorderRadius1),
+            bottomRight: Radius.circular(0),
+          )
       : inComingChatBubbleConfig?.borderRadius ??
-          (message.length < 29
-              ? BorderRadius.circular(replyBorderRadius1)
-              : BorderRadius.circular(replyBorderRadius2));
+          const BorderRadius.only(
+            topLeft: Radius.circular(replyBorderRadius1),
+            topRight: Radius.circular(replyBorderRadius1),
+            bottomLeft: Radius.circular(0),
+            bottomRight: Radius.circular(replyBorderRadius1),
+          );
 
   Color get _color => isMessageBySender
       ? outgoingChatBubbleConfig?.color ?? Colors.purple

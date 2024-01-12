@@ -39,6 +39,7 @@ class ChatListWidget extends StatefulWidget {
     required this.showTypingIndicator,
     required this.assignReplyMessage,
     required this.replyMessage,
+    required this.onMoreTap,
     this.loadingWidget,
     this.reactionPopupConfig,
     this.messageConfig,
@@ -107,6 +108,8 @@ class ChatListWidget extends StatefulWidget {
 
   /// Provides callback when user tap anywhere on whole chat.
   final VoidCallBack? onChatListTap;
+
+  final VoidCallBack onMoreTap;
 
   @override
   State<ChatListWidget> createState() => _ChatListWidgetState();
@@ -202,6 +205,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
                     messageConfig: widget.messageConfig,
                     chatBubbleConfig: widget.chatBubbleConfig,
                     typeIndicatorConfig: widget.typeIndicatorConfig,
+                    onMoreTap: widget.onMoreTap,
                     onChatBubbleLongPress: (yCoordinate, xCoordinate, message) {
                       if (featureActiveConfig?.enableReactionPopup ?? false) {
                         _reactionPopupKey.currentState?.refreshWidget(
