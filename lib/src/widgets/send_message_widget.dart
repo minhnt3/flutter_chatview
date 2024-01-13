@@ -132,24 +132,19 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
                   ),
                   Column(
                     children: [
-                      const SizedBox(height: 0.5, child: Divider(
-                        color: Colors.grey,
-                      )),
+                      const SizedBox(
+                          height: 0.5,
+                          child: Divider(
+                            color: Colors.grey,
+                          )),
                       ValueListenableBuilder<ReplyMessage>(
                         builder: (_, state, child) {
                           if (state.message.isNotEmpty) {
                             return Container(
-                              decoration: BoxDecoration(
-                                color: widget.sendMessageConfig
-                                        ?.textFieldBackgroundColor ??
-                                    Colors.black,
-                                // borderRadius: const BorderRadius.vertical(
-                                //   top: Radius.circular(10),
-                                // ),
-                              ),
+                              color: Colors.black,
                               padding: const EdgeInsets.fromLTRB(
                                 leftPadding,
-                                leftPadding,
+                                0,
                                 leftPadding,
                                 leftPadding,
                               ),
