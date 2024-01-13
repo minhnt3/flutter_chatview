@@ -136,30 +136,6 @@ class _ChatScreenState extends State<ChatScreen> {
         replyMessage: replyMessage,
         messageType: messageType,
       ),
-      Message(
-        id: (id + 1).toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
-      Message(
-        id: (id + 2).toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
-      Message(
-        id: (id + 3).toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
     ];
     Future.delayed(const Duration(milliseconds: 300), () {
       _chatController.messageList.last.setStatus = MessageStatus.undelivered;

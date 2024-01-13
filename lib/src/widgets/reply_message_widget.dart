@@ -147,15 +147,29 @@ class ReplyMessageWidget extends StatelessWidget {
                                         ? Row(
                                             children: [
                                               Expanded(
-                                                child: Text(
-                                                  replyMessage,
-                                                  textAlign: TextAlign.end,
-                                                  style: repliedMessageConfig
-                                                          ?.textStyle ??
-                                                      textTheme.bodyMedium!
-                                                          .copyWith(
-                                                              color:
-                                                                  Colors.black),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      "$replyBy",
+                                                      style: const TextStyle(
+                                                        color: Color(0xFFDEDEDE),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      replyMessage,
+                                                      textAlign: TextAlign.end,
+                                                      style: repliedMessageConfig
+                                                              ?.textStyle ??
+                                                          textTheme.bodyMedium!
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .black),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
