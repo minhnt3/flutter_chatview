@@ -39,6 +39,7 @@ class ChatListWidget extends StatefulWidget {
     required this.showTypingIndicator,
     required this.assignReplyMessage,
     required this.replyMessage,
+    required this.onMoreTap,
     this.loadingWidget,
     this.reactionPopupConfig,
     this.messageConfig,
@@ -52,6 +53,8 @@ class ChatListWidget extends StatefulWidget {
     this.isLastPage,
     this.onChatListTap,
   }) : super(key: key);
+
+  final void Function(Message, int) onMoreTap;
 
   /// Provides controller for accessing few function for running chat.
   final ChatController chatController;
@@ -188,6 +191,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
               return Stack(
                 children: [
                   ChatGroupedListWidget(
+                    onMoreTap: widget.onMoreTap,
                     showPopUp: showPopupValue,
                     showTypingIndicator: showTypingIndicator,
                     scrollController: scrollController,

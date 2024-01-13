@@ -25,7 +25,6 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/utils/package_strings.dart';
-import 'package:chatview/src/widgets/chatui_textfield.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
@@ -41,7 +40,16 @@ class SendMessageWidget extends StatefulWidget {
     this.sendMessageBuilder,
     this.onReplyCallback,
     this.onReplyCloseCallback,
+    required this.items,
+    this.onTextChanged,
+    this.onMenuToggle,
+    this.onMenuItemPressed,
   }) : super(key: key);
+
+  final List<MenuItem> items;
+  final void Function(String text)? onTextChanged;
+  final void Function(bool)? onMenuToggle;
+  final void Function(ActionType)? onMenuItemPressed;
 
   /// Provides call back when user tap on send button on text field.
   final StringMessageCallBack onSendTap;
@@ -80,9 +88,10 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
       ? widget.chatController.getUserFromId(replyMessage.replyTo)
       : null;
 
-  String get _replyTo => replyMessage.replyTo == currentUser?.id
-      ? PackageStrings.you
-      : repliedUser?.name ?? '';
+  String _replyTo(ReplyMessage replyMessage) =>
+      replyMessage.replyTo == currentUser?.id
+          ? PackageStrings.you
+          : repliedUser?.name ?? '';
 
   ChatUser? currentUser;
 
@@ -96,7 +105,6 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final replyTitle = "${PackageStrings.replyTo} $_replyTo";
     return widget.sendMessageBuilder != null
         ? Positioned(
             right: 0,
@@ -104,8 +112,10 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
             bottom: 0,
             child: widget.sendMessageBuilder!(replyMessage),
           )
-        : Align(
-            alignment: Alignment.bottomCenter,
+        : Positioned(
+            right: 0,
+            left: 0,
+            bottom: 0,
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Stack(
@@ -120,120 +130,108 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
                       color: widget.backgroundColor ?? Colors.white,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      bottomPadding4,
-                      bottomPadding4,
-                      bottomPadding4,
-                      _bottomPadding,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        ValueListenableBuilder<ReplyMessage>(
-                          builder: (_, state, child) {
-                            if (state.message.isNotEmpty) {
-                              return Container(
+                  Column(
+                    children: [
+                      const SizedBox(height: 0.5, child: Divider(
+                        color: Colors.grey,
+                      )),
+                      ValueListenableBuilder<ReplyMessage>(
+                        builder: (_, state, child) {
+                          if (state.message.isNotEmpty) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: widget.sendMessageConfig
+                                        ?.textFieldBackgroundColor ??
+                                    Colors.black,
+                                // borderRadius: const BorderRadius.vertical(
+                                //   top: Radius.circular(10),
+                                // ),
+                              ),
+                              padding: const EdgeInsets.fromLTRB(
+                                leftPadding,
+                                leftPadding,
+                                leftPadding,
+                                leftPadding,
+                              ),
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                  horizontal: 6,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: widget.sendMessageConfig
-                                          ?.textFieldBackgroundColor ??
-                                      Colors.white,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(14),
-                                  ),
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                margin: const EdgeInsets.only(
-                                  bottom: 17,
-                                  right: 0.4,
-                                  left: 0.4,
-                                ),
-                                padding: const EdgeInsets.fromLTRB(
-                                  leftPadding,
-                                  leftPadding,
-                                  leftPadding,
-                                  30,
-                                ),
-                                child: Container(
-                                  margin: const EdgeInsets.only(bottom: 2),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4,
-                                    horizontal: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: widget.sendMessageConfig
-                                            ?.replyDialogColor ??
-                                        Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            replyTitle,
-                                            style: TextStyle(
-                                              color: widget.sendMessageConfig
-                                                      ?.replyTitleColor ??
-                                                  Colors.deepPurple,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 0.25,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            constraints: const BoxConstraints(),
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(
-                                              Icons.close,
-                                              color: widget.sendMessageConfig
-                                                      ?.closeIconColor ??
-                                                  Colors.black,
-                                              size: 16,
-                                            ),
-                                            onPressed: _onCloseTap,
-                                          ),
-                                        ],
-                                      ),
-                                      if (state.messageType.isVoice)
-                                        _voiceReplyMessageView
-                                      else if (state.messageType.isImage)
-                                        _imageReplyMessageView
-                                      else
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
                                         Text(
-                                          state.message,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                          "${PackageStrings.replyTo} ${_replyTo(state)}",
                                           style: TextStyle(
-                                            fontSize: 12,
                                             color: widget.sendMessageConfig
-                                                    ?.replyMessageColor ??
+                                                    ?.replyTitleColor ??
                                                 Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.25,
                                           ),
                                         ),
-                                    ],
-                                  ),
+                                        IconButton(
+                                          constraints: const BoxConstraints(),
+                                          padding: EdgeInsets.zero,
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: widget.sendMessageConfig
+                                                    ?.closeIconColor ??
+                                                Colors.black,
+                                            size: 16,
+                                          ),
+                                          onPressed: _onCloseTap,
+                                        ),
+                                      ],
+                                    ),
+                                    if (state.messageType.isVoice)
+                                      _voiceReplyMessageView
+                                    else if (state.messageType.isImage)
+                                      _imageReplyMessageView
+                                    else
+                                      Text(
+                                        state.message,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                  ],
                                 ),
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          },
-                          valueListenable: _replyMessage,
-                        ),
-                        ChatUITextField(
-                          focusNode: _focusNode,
-                          textEditingController: _textEditingController,
-                          onPressed: _onPressed,
-                          sendMessageConfig: widget.sendMessageConfig,
-                          onRecordingComplete: _onRecordingComplete,
-                          onImageSelected: _onImageSelected,
-                        )
-                      ],
-                    ),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                        valueListenable: _replyMessage,
+                      ),
+                      ChatUITextField(
+                        items: widget.items,
+                        onTextChanged: widget.onTextChanged,
+                        onMenuToggle: widget.onMenuToggle,
+                        onMenuItemPressed: widget.onMenuItemPressed,
+                        focusNode: _focusNode,
+                        textEditingController: _textEditingController,
+                        onPressed: _onPressed,
+                        sendMessageConfig: widget.sendMessageConfig,
+                        onRecordingComplete: _onRecordingComplete,
+                        onImageSelected: _onImageSelected,
+                      )
+                    ],
                   ),
                 ],
               ),

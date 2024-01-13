@@ -23,6 +23,7 @@
 library chatview;
 
 export 'src/widgets/chat_view.dart';
+export 'src/widgets/chatui_textfield.dart';
 export 'src/models/models.dart';
 export 'src/widgets/chat_view_appbar.dart';
 export 'src/values/enumaration.dart';

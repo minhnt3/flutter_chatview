@@ -37,6 +37,7 @@ class MessageView extends StatefulWidget {
     required this.isMessageBySender,
     required this.onLongPress,
     required this.isLongPressEnable,
+    required this.replyMessage,
     this.chatBubbleMaxWidth,
     this.inComingChatBubbleConfig,
     this.outgoingChatBubbleConfig,
@@ -49,6 +50,8 @@ class MessageView extends StatefulWidget {
     this.onMaxDuration,
     this.controller,
   }) : super(key: key);
+
+  final String replyMessage;
 
   /// Provides message instance of chat.
   final Message message;
@@ -210,6 +213,7 @@ class _MessageViewState extends State<MessageView>
                   );
                 } else if (widget.message.messageType.isText) {
                   return TextMessageView(
+                    replyMessage: widget.replyMessage,
                     inComingChatBubbleConfig: widget.inComingChatBubbleConfig,
                     outgoingChatBubbleConfig: widget.outgoingChatBubbleConfig,
                     isMessageBySender: widget.isMessageBySender,
@@ -240,8 +244,7 @@ class _MessageViewState extends State<MessageView>
             valueListenable: widget.message.statusNotifier,
             builder: (context, value, child) {
               if (widget.isMessageBySender &&
-                  widget.controller?.messageList.last.id ==
-                      widget.message.id &&
+                  widget.controller?.messageList.last.id == widget.message.id &&
                   widget.message.status == MessageStatus.read) {
                 if (ChatViewInheritedWidget.of(context)
                         ?.featureActiveConfig

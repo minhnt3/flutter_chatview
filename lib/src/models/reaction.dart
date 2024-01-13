@@ -19,4 +19,8 @@ class Reaction {
         'reactions': reactions,
         'reactedUserIds': reactedUserIds,
       };
+
+  @override
+  String toString() =>
+      'Reaction(reactions: $reactions, reactedUserIds: $reactedUserIds)';
 }

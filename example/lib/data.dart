@@ -27,7 +27,7 @@ class Data {
     ),
     Message(
       id: '4',
-      message: "Can you write the time and place of the meeting?",
+      message: "Can you write the time place of the meeting ?Can you write the time place of the meeting?Can you write the time place of the meeting?",
       createdAt: DateTime.now(),
       sendBy: '1',
       status: MessageStatus.read,
@@ -56,7 +56,7 @@ class Data {
     ),
     Message(
       id: '8',
-      message: "https://bit.ly/3JHS2Wl",
+      message: "Hello",
       createdAt: DateTime.now(),
       sendBy: '2',
       reaction: Reaction(
@@ -65,7 +65,7 @@ class Data {
       ),
       status: MessageStatus.read,
       replyMessage: const ReplyMessage(
-        message: "Can you write the time and place of the meeting?",
+        message: "Can you write the time place of the meeting ?Can you write the time place of the meeting?Can you write the time place of the meeting?",
         replyTo: '1',
         replyBy: '2',
         messageId: '4',
@@ -77,6 +77,12 @@ class Data {
       createdAt: DateTime.now(),
       sendBy: '1',
       status: MessageStatus.delivered,
+      replyMessage: const ReplyMessage(
+        message: "Done!!!!!!",
+        replyTo: '1',
+        replyBy: '1',
+        messageId: '4',
+      ),
       reaction: Reaction(
         reactions: [
           '\u{2764}',
@@ -97,15 +103,15 @@ class Data {
         reactedUserIds: ['2', '4', '3', '1'],
       ),
     ),
-    Message(
-      id: '11',
-      message: "https://miro.medium.com/max/1000/0*s7of7kWnf9fDg4XM.jpeg",
-      createdAt: DateTime.now(),
-      messageType: MessageType.image,
-      sendBy: '1',
-      reaction: Reaction(reactions: ['\u{2764}'], reactedUserIds: ['2']),
-      status: MessageStatus.delivered,
-    ),
+    // Message(
+    //   id: '11',
+    //   message: "https://miro.medium.com/max/1000/0*s7of7kWnf9fDg4XM.jpeg",
+    //   createdAt: DateTime.now(),
+    //   messageType: MessageType.image,
+    //   sendBy: '1',
+    //   reaction: Reaction(reactions: ['\u{2764}'], reactedUserIds: ['2']),
+    //   status: MessageStatus.delivered,
+    // ),
     Message(
       id: '12',
       message: "🤩🤩",

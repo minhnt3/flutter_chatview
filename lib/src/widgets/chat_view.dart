@@ -22,6 +22,7 @@
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/widgets/chat_list_widget.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
+import 'package:chatview/src/widgets/chatui_textfield.dart';
 import 'package:chatview/src/widgets/chatview_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart';
@@ -33,6 +34,7 @@ class ChatView extends StatefulWidget {
     Key? key,
     required this.chatController,
     required this.currentUser,
+    this.onMoreTap,
     this.onSendTap,
     this.profileCircleConfig,
     this.chatBubbleConfig,
@@ -54,11 +56,21 @@ class ChatView extends StatefulWidget {
     required this.chatViewState,
     ChatViewStateConfiguration? chatViewStateConfig,
     this.featureActiveConfig = const FeatureActiveConfig(),
+    required this.items,
+    this.onTextChanged,
+    this.onMenuToggle,
+    this.onMenuItemPressed,
   })  : chatBackgroundConfig =
             chatBackgroundConfig ?? const ChatBackgroundConfiguration(),
         chatViewStateConfig =
             chatViewStateConfig ?? const ChatViewStateConfiguration(),
         super(key: key);
+
+  final List<MenuItem> items;
+  final void Function(String text)? onTextChanged;
+  final void Function(bool)? onMenuToggle;
+  final void Function(Message, int)? onMoreTap;
+  final void Function(ActionType)? onMenuItemPressed;
 
   /// Provides configuration related to user profile circle avatar.
   final ProfileCircleConfiguration? profileCircleConfig;
@@ -247,6 +259,8 @@ class _ChatViewState extends State<ChatView>
                           repliedMessageConfig: widget.repliedMessageConfig,
                           swipeToReplyConfig: widget.swipeToReplyConfig,
                           onChatListTap: widget.onChatListTap,
+                          onMoreTap: (message, index) =>
+                              widget.onMoreTap?.call(message, index),
                           assignReplyMessage: (message) => _sendMessageKey
                               .currentState
                               ?.assignReplyMessage(message),
@@ -255,6 +269,10 @@ class _ChatViewState extends State<ChatView>
                     ),
                   if (featureActiveConfig.enableTextField)
                     SendMessageWidget(
+                      items: widget.items,
+                      onTextChanged: widget.onTextChanged,
+                      onMenuToggle: widget.onMenuToggle,
+                      onMenuItemPressed: widget.onMenuItemPressed,
                       key: _sendMessageKey,
                       chatController: chatController,
                       sendMessageBuilder: widget.sendMessageBuilder,

@@ -64,4 +64,9 @@ class ReplyMessage {
         'id': messageId,
         'voiceMessageDuration': voiceMessageDuration,
       };
+
+  @override
+  String toString() {
+    return 'ReplyMessage(message: $message, replyBy: $replyBy, replyTo: $replyTo, messageType: $messageType, voiceMessageDuration: $voiceMessageDuration, messageId: $messageId)';
+  }
 }
