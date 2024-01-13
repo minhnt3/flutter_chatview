@@ -165,10 +165,6 @@ class _ChatUITextFieldState extends State<ChatUITextField>
       children: [
         AnimatedContainer(
           decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
             color: Colors.white,
           ),
           duration: const Duration(milliseconds: 200),
