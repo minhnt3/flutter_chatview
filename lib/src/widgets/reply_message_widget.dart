@@ -54,9 +54,11 @@ class ReplyMessageWidget extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final replyMessage = message.replyMessage.message;
     final chatController = ChatViewInheritedWidget.of(context)?.chatController;
-    final messagedUser =
-        chatController?.getUserFromId(message.replyMessage.replyBy);
-    final replyBy = replyBySender ? PackageStrings.you : messagedUser?.name;
+    final replyToUserId =
+        chatController?.getUserFromId(message.replyMessage.replyTo);
+    final replyTitle = replyToUserId?.id == currentUser?.id
+        ? PackageStrings.you
+        : replyToUserId?.name;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -152,9 +154,10 @@ class ReplyMessageWidget extends StatelessWidget {
                                                       CrossAxisAlignment.end,
                                                   children: [
                                                     Text(
-                                                      "$replyBy",
+                                                      "$replyTitle",
                                                       style: const TextStyle(
-                                                        color: Color(0xFFDEDEDE),
+                                                        color:
+                                                            Color(0xFFDEDEDE),
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -200,7 +203,7 @@ class ReplyMessageWidget extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      "$replyBy",
+                                                      "$replyTitle",
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontWeight:
