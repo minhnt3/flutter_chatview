@@ -49,7 +49,7 @@ class Data {
     ),
     Message(
       id: '7',
-      message: "I guess Simform will reply",
+      message: "I guess ntminhdn@gmail.com Simform will reply",
       createdAt: DateTime.now(),
       sendBy: '4',
       status: MessageStatus.read,
@@ -65,7 +65,7 @@ class Data {
       ),
       status: MessageStatus.read,
       replyMessage: const ReplyMessage(
-        message: "Can you write the time place of the meeting ?Can you write the time place of the meeting?Can you write the time place of the meeting?",
+        message: "Can you write 0905556476 the time place of the meeting ?Can you write the time place of the meeting?Can you write the time place of the meeting?",
         replyTo: '2',
         replyBy: '2',
         messageId: '4',
@@ -73,7 +73,7 @@ class Data {
     ),
     Message(
       id: '9',
-      message: "Done",
+      message: "Done https://google.com 0905555555 ntminhdn@gmail.com",
       createdAt: DateTime.now(),
       sendBy: '1',
       status: MessageStatus.delivered,
@@ -82,14 +82,6 @@ class Data {
         replyTo: '2',
         replyBy: '1',
         messageId: '8',
-      ),
-      reaction: Reaction(
-        reactions: [
-          '\u{2764}',
-          '\u{2764}',
-          '\u{2764}',
-        ],
-        reactedUserIds: ['2', '3', '4'],
       ),
     ),
     Message(
