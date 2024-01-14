@@ -33,7 +33,7 @@ class ChatGroupedListWidget extends StatefulWidget {
   const ChatGroupedListWidget({
     Key? key,
     required this.showPopUp,
-    required this.onMoreTap,
+    required this.onMoreMenuBuilder,
     required this.showTypingIndicator,
     required this.scrollController,
     required this.chatBackgroundConfig,
@@ -50,7 +50,7 @@ class ChatGroupedListWidget extends StatefulWidget {
     this.typeIndicatorConfig,
   }) : super(key: key);
 
-  final void Function(Message, int) onMoreTap;
+  final Widget Function(Message, int) onMoreMenuBuilder;
 
   /// Allow user to swipe to see time while reaction pop is not open.
   final bool showPopUp;
@@ -319,7 +319,7 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
                         swipeToReplyConfig: widget.swipeToReplyConfig,
                         repliedMessageConfig: widget.repliedMessageConfig,
                         slideAnimation: _slideAnimation,
-                        onMoreTap: widget.onMoreTap,
+                        moreMenuBuilder: widget.onMoreMenuBuilder,
                         onLongPress: (yCoordinate, xCoordinate) =>
                             widget.onChatBubbleLongPress(
                           yCoordinate,

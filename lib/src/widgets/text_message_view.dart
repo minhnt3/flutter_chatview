@@ -19,14 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 
 import '../utils/constants/constants.dart';
+import '../utils/linkifier/phone_number_linkifier.dart';
 import 'link_preview.dart';
 import 'reaction_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TextMessageView extends StatelessWidget {
   const TextMessageView({
@@ -96,13 +101,42 @@ class TextMessageView extends StatelessWidget {
                   linkPreviewConfig: _linkPreviewConfig,
                   url: textMessage,
                 )
-              : Text(
-                  textMessage,
+              : SelectableLinkify(
+                  contextMenuBuilder: (context, editableTextState) {
+                    return AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: editableTextState.contextMenuAnchors,
+                      buttonItems: <ContextMenuButtonItem>[
+                        ContextMenuButtonItem(
+                          onPressed: () {
+                            editableTextState
+                                .copySelection(SelectionChangedCause.toolbar);
+                          },
+                          type: ContextMenuButtonType.copy,
+                        ),
+                        ContextMenuButtonItem(
+                          onPressed: () {
+                            editableTextState
+                                .selectAll(SelectionChangedCause.toolbar);
+                          },
+                          type: ContextMenuButtonType.selectAll,
+                        ),
+                      ],
+                    );
+                  },
+                  text: utf8.decode(utf8.encode(textMessage)),
+                  onOpen: (link) {
+                    launchUrl(Uri.parse(link.url));
+                  },
                   style: _textStyle ??
                       textTheme.bodyMedium!.copyWith(
                         color: Colors.white,
                         fontSize: 16,
                       ),
+                  linkifiers: const [
+                    UrlLinkifier(),
+                    PhoneNumberLinkifier(),
+                    EmailLinkifier()
+                  ],
                 ),
         ),
         if (message.reaction.reactions.isNotEmpty)

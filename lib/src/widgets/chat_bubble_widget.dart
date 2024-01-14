@@ -39,7 +39,7 @@ class ChatBubbleWidget extends StatefulWidget {
     required this.onLongPress,
     required this.slideAnimation,
     required this.onSwipe,
-    required this.onMoreTap,
+    required this.moreMenuBuilder,
     this.profileCircleConfig,
     this.chatBubbleConfig,
     this.repliedMessageConfig,
@@ -98,7 +98,7 @@ class ChatBubbleWidget extends StatefulWidget {
 
   final bool isLastMessage;
 
-  final void Function(Message, int) onMoreTap;
+  final Widget Function(Message, int) moreMenuBuilder;
 
   @override
   State<ChatBubbleWidget> createState() => _ChatBubbleWidgetState();
@@ -356,15 +356,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
               : Row(
                   children: [
                     if (isMessageBySender)
-                      IconButton(
-                        onPressed: () {
-                          widget.onMoreTap(widget.message, widget.index);
-                        },
-                        icon: const Icon(
-                          Icons.more_horiz,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      widget.moreMenuBuilder(widget.message, widget.index),
                     Flexible(
                       child: Container(
                         margin: const EdgeInsets.fromLTRB(0, 0, 6, 0),
@@ -400,15 +392,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                       ),
                     ),
                     if (!isMessageBySender)
-                      IconButton(
-                        onPressed: () {
-                          widget.onMoreTap(widget.message, widget.index);
-                        },
-                        icon: const Icon(
-                          Icons.more_horiz,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      widget.moreMenuBuilder(widget.message, widget.index),
                   ],
                 ),
         if (replyMessage.isEmpty) _messageView(replyMessage),
@@ -456,30 +440,14 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
       return Row(children: [
         Flexible(child: messageView),
         if (replyMessage.isEmpty)
-          IconButton(
-            onPressed: () {
-              widget.onMoreTap(widget.message, widget.index);
-            },
-            icon: const Icon(
-              Icons.more_horiz,
-              color: Colors.grey,
-            ),
-          ),
+          widget.moreMenuBuilder(widget.message, widget.index),
       ]);
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           if (replyMessage.isEmpty)
-            IconButton(
-              onPressed: () {
-                widget.onMoreTap(widget.message, widget.index);
-              },
-              icon: const Icon(
-                Icons.more_horiz,
-                color: Colors.grey,
-              ),
-            ),
+            widget.moreMenuBuilder(widget.message, widget.index),
           Flexible(child: messageView)
         ],
       );

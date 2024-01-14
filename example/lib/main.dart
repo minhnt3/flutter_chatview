@@ -1,6 +1,7 @@
 import 'package:chatview/chatview.dart';
 import 'package:example/data.dart';
 import 'package:example/models/theme.dart';
+import 'package:example/more_menu_icon_button.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -86,7 +87,10 @@ class _ChatScreenState extends State<ChatScreen> {
         onMenuToggle: (open) => print('Menu is ${open ? 'open' : 'closed'}'),
         onTextChanged: (text) => print('Text is $text'),
         onMenuItemPressed: (item) => print('Menu item pressed $item'),
-        onMoreTap: (m, i) => print('More button tapped $m $i'),
+        onMoreMenuBuilder: (m, i) => MoreMenuIconButton(
+          message: m,
+          index: i,
+        ),
         items: [
           MenuItem(
             text: 'Secure the chat',

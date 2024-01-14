@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  popup_menu: 2.0.0
   cupertino_icons: ^1.0.5
   chatview:
     path: ../

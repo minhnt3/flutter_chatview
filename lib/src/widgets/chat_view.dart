@@ -22,10 +22,10 @@
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/widgets/chat_list_widget.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
-import 'package:chatview/src/widgets/chatui_textfield.dart';
 import 'package:chatview/src/widgets/chatview_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart';
+
 import '../values/custom_time_messages.dart';
 import 'send_message_widget.dart';
 
@@ -34,7 +34,7 @@ class ChatView extends StatefulWidget {
     Key? key,
     required this.chatController,
     required this.currentUser,
-    this.onMoreTap,
+    required this.onMoreMenuBuilder,
     this.onSendTap,
     this.profileCircleConfig,
     this.chatBubbleConfig,
@@ -69,7 +69,7 @@ class ChatView extends StatefulWidget {
   final List<MenuItem> items;
   final void Function(String text)? onTextChanged;
   final void Function(bool)? onMenuToggle;
-  final void Function(Message, int)? onMoreTap;
+  final Widget Function(Message, int) onMoreMenuBuilder;
   final void Function(ActionType)? onMenuItemPressed;
 
   /// Provides configuration related to user profile circle avatar.
@@ -259,8 +259,7 @@ class _ChatViewState extends State<ChatView>
                           repliedMessageConfig: widget.repliedMessageConfig,
                           swipeToReplyConfig: widget.swipeToReplyConfig,
                           onChatListTap: widget.onChatListTap,
-                          onMoreTap: (message, index) =>
-                              widget.onMoreTap?.call(message, index),
+                          onMoreMenuBuilder: widget.onMoreMenuBuilder,
                           assignReplyMessage: (message) => _sendMessageKey
                               .currentState
                               ?.assignReplyMessage(message),
