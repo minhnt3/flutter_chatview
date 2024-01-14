@@ -21,8 +21,8 @@
  */
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
@@ -34,6 +34,16 @@ class ChatController {
 
   /// Allow user to show typing indicator defaults to false.
   final ValueNotifier<bool> _showTypingIndicator = ValueNotifier(false);
+  final StreamController<Message?> _showReplyViewController =
+      StreamController();
+
+  StreamController<Message?> get showReplyViewController =>
+      _showReplyViewController;
+
+  void showReplyView(Message message) {
+    if (_showReplyViewController.isClosed) return;
+    _showReplyViewController.add(message);
+  }
 
   /// TypingIndicator as [ValueNotifier] for [GroupedChatList] widget's typingIndicator [ValueListenableBuilder].
   ///  Use this for listening typing indicators
@@ -68,7 +78,10 @@ class ChatController {
   List<Message> get messageList => _allMessages;
 
   /// Used to dispose stream.
-  void dispose() => messageStreamController.close();
+  void dispose() {
+    messageStreamController.close();
+    _showReplyViewController.close();
+  }
 
   /// Used to add message in message list.
   void addMessage(Message message) {

@@ -90,6 +90,9 @@ class _ChatScreenState extends State<ChatScreen> {
         onMoreMenuBuilder: (m, i) => MoreMenuIconButton(
           message: m,
           index: i,
+          onReplyTap: (message, index) {
+            _chatController.showReplyView(message);
+          }
         ),
         items: [
           MenuItem(

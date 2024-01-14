@@ -179,6 +179,9 @@ class _ChatViewState extends State<ChatView>
     setLocaleMessages('en', ReceiptsCustomMessages());
     // Adds current user in users list.
     chatController.chatUsers.add(widget.currentUser);
+    chatController.showReplyViewController.stream.listen((message) {
+      showReplyView(message!);
+    });
   }
 
   @override
@@ -260,9 +263,8 @@ class _ChatViewState extends State<ChatView>
                           swipeToReplyConfig: widget.swipeToReplyConfig,
                           onChatListTap: widget.onChatListTap,
                           onMoreMenuBuilder: widget.onMoreMenuBuilder,
-                          assignReplyMessage: (message) => _sendMessageKey
-                              .currentState
-                              ?.assignReplyMessage(message),
+                          assignReplyMessage: (message) =>
+                              showReplyView(message),
                         );
                       },
                     ),
@@ -289,6 +291,10 @@ class _ChatViewState extends State<ChatView>
         ),
       ),
     );
+  }
+
+  void showReplyView(Message message) {
+    return _sendMessageKey.currentState?.assignReplyMessage(message);
   }
 
   void _onSendTap(

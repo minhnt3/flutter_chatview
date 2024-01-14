@@ -7,10 +7,12 @@ class MoreMenuIconButton extends StatelessWidget {
     Key? key,
     required this.message,
     required this.index,
+    required this.onReplyTap,
   }) : super(key: key);
 
   final Message message;
   final int index;
+  final void Function(Message, int) onReplyTap;
 
   final globalKey = GlobalKey();
 
@@ -29,7 +31,7 @@ class MoreMenuIconButton extends StatelessWidget {
   }
 
   void _showPopupMenu(BuildContext context) {
-    const transfer = 'Transfer';
+    const reply = 'Reply';
     const edit = 'Edit';
     const delete = 'Delete';
     final menu = p.PopupMenu(
@@ -42,9 +44,9 @@ class MoreMenuIconButton extends StatelessWidget {
       ),
       items: [
         p.MenuItem(
-          title: transfer,
+          title: reply,
           image: const Icon(
-            Icons.sync_alt,
+            Icons.reply,
             color: Colors.white,
           ),
           textStyle: TextStyle(color: Colors.white, fontSize: 12),
@@ -68,7 +70,8 @@ class MoreMenuIconButton extends StatelessWidget {
       ],
       onClickMenu: (item) {
         switch (item.menuTitle) {
-          case transfer:
+          case reply:
+            onReplyTap(message, index);
             break;
           case edit:
             break;
