@@ -110,7 +110,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
   bool get isMessageBySender => widget.message.sendBy == currentUser?.id;
 
   bool get isLastMessage =>
-      chatController?.messageList.last.id == widget.message.id;
+      chatController?.messageList.first.id == widget.message.id;
 
   ProfileCircleConfiguration? get profileCircleConfig =>
       widget.profileCircleConfig;

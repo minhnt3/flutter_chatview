@@ -117,4 +117,45 @@ class Message {
         'voice_message_duration': voiceMessageDuration,
         'status': status.name
       };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is! Message) return false;
+
+    // print('mmmm id ${other.id == id}');
+    // print('mmmm key ${other.key == key}');
+    // print('mmmm me ${other.message == message}');
+    // print('mmmm crea ${other.createdAt == createdAt}');
+    // print('mmmm sen ${other.sendBy == sendBy}');
+    // print('mmmm rep ${other.replyMessage == replyMessage}');
+    // print('mmmm rea ${other.reaction == reaction}');
+    // print('mmmm met${other.messageType == messageType}');
+    // print('mmmm voi ${other.voiceMessageDuration == voiceMessageDuration}');
+    // print('mmmm sta ${other.status == status}');
+
+    return other.id == id &&
+        other.message == message &&
+        other.createdAt == createdAt &&
+        other.sendBy == sendBy &&
+        other.replyMessage == replyMessage &&
+        other.reaction == reaction &&
+        other.messageType == messageType &&
+        other.voiceMessageDuration == voiceMessageDuration &&
+        other.status == status;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        message.hashCode ^
+        createdAt.hashCode ^
+        sendBy.hashCode ^
+        replyMessage.hashCode ^
+        reaction.hashCode ^
+        messageType.hashCode ^
+        voiceMessageDuration.hashCode ^
+        status.hashCode;
+  }
 }

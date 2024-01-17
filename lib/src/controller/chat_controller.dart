@@ -22,6 +22,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
@@ -74,6 +75,9 @@ class ChatController {
 
   /// Represents message stream of chat
   StreamController<List<Message>> messageStreamController = StreamController();
+
+  late Stream<List<Message>> distinctStream =
+      messageStreamController.stream.distinct();
 
   List<Message> get messageList => _allMessages;
 
@@ -142,6 +146,11 @@ class ChatController {
   }
 
   set messageList(List<Message> messageList) {
+    if (listEquals(_allMessages, messageList)) {
+      debugPrint('avoid rebuilding');
+      return;
+    }
+
     _allMessages = messageList;
     messageStreamController.sink.add(_allMessages);
   }
