@@ -205,7 +205,7 @@ class _ChatUITextFieldState extends State<ChatUITextField>
         ),
         if (isOpen) const SizedBox(height: 1, child: Divider()),
         Container(
-          color: Colors.black,
+          color: Colors.white,
           // height: Dimens.d56.responsive(),
           alignment: Alignment.center,
           padding: const EdgeInsets.only(
@@ -227,7 +227,7 @@ class _ChatUITextFieldState extends State<ChatUITextField>
                       icon: AnimatedIcons.menu_close,
                       progress: _animationController,
                       size: 24,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                   if (isRecordingValue && controller != null && !kIsWeb)
@@ -275,10 +275,10 @@ class _ChatUITextFieldState extends State<ChatUITextField>
                                   Colors.white,
                           filled: true,
                           hintStyle: textFieldConfig?.hintStyle ??
-                              TextStyle(
+                              const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.grey.shade600,
+                                color: Colors.grey,
                                 letterSpacing: 0.25,
                               ),
                           contentPadding: textFieldConfig?.contentPadding ??
@@ -335,7 +335,7 @@ class _ChatUITextFieldState extends State<ChatUITextField>
                                           ?.galleryImagePickerIcon ??
                                       const Icon(
                                         Icons.image,
-                                        color: Colors.white,
+                                        color: Colors.black,
                                       ),
                                 ),
                             ],
