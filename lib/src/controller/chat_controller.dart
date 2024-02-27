@@ -147,7 +147,6 @@ class ChatController {
 
   set messageList(List<Message> messageList) {
     if (listEquals(_allMessages, messageList)) {
-      debugPrint('avoid rebuilding');
       return;
     }
 

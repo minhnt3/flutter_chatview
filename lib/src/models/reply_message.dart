@@ -76,13 +76,6 @@ class ReplyMessage {
 
     if (other is! ReplyMessage) return false;
 
-    // print(other.message == message);
-    // print(other.replyBy == replyBy);
-    // print(other.replyTo == replyTo);
-    // print(other.messageType == messageType);
-    // print(other.voiceMessageDuration == voiceMessageDuration);
-    // print(other.messageId == messageId);
-
     return other.message == message &&
         other.replyBy == replyBy &&
         other.replyTo == replyTo &&

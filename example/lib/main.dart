@@ -103,6 +103,14 @@ class _ChatScreenState extends State<ChatScreen> {
             text: 'Unlock that chat',
             action: () async {},
           ),
+          MenuItem(
+            text: 'Unlock that chat',
+            action: () async {},
+          ),
+          MenuItem(
+            text: 'Unlock that chat',
+            action: () async {},
+          ),
         ],
         appBar: _buildAppBar(),
         currentUser: currentUser,

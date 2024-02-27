@@ -124,17 +124,6 @@ class Message {
 
     if (other is! Message) return false;
 
-    // print('mmmm id ${other.id == id}');
-    // print('mmmm key ${other.key == key}');
-    // print('mmmm me ${other.message == message}');
-    // print('mmmm crea ${other.createdAt == createdAt}');
-    // print('mmmm sen ${other.sendBy == sendBy}');
-    // print('mmmm rep ${other.replyMessage == replyMessage}');
-    // print('mmmm rea ${other.reaction == reaction}');
-    // print('mmmm met${other.messageType == messageType}');
-    // print('mmmm voi ${other.voiceMessageDuration == voiceMessageDuration}');
-    // print('mmmm sta ${other.status == status}');
-
     return other.id == id &&
         other.message == message &&
         other.createdAt == createdAt &&
