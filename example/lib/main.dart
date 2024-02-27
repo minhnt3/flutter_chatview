@@ -83,17 +83,17 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ChatView(
+        showTypingIndicator: false,
         onSendTap: _onSendTap,
         onMenuToggle: (open) => print('Menu is ${open ? 'open' : 'closed'}'),
         onTextChanged: (text) => print('Text is $text'),
         onMenuItemPressed: (item) => print('Menu item pressed $item'),
         onMoreMenuBuilder: (m, i) => MoreMenuIconButton(
-          message: m,
-          index: i,
-          onReplyTap: (message, index) {
-            _chatController.showReplyView(message);
-          }
-        ),
+            message: m,
+            index: i,
+            onReplyTap: (message, index) {
+              _chatController.showReplyView(message);
+            }),
         items: [
           MenuItem(
             text: 'Secure the chat',
@@ -190,6 +190,7 @@ class _ChatScreenState extends State<ChatScreen> {
         enableReactionPopup: false,
         enableChatSeparator: false,
         enableOtherUserProfileAvatar: false,
+        enableCurrentUserProfileAvatar: false,
       );
 
   ChatViewState get chatViewState => ChatViewState.hasMessages;
