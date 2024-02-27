@@ -316,7 +316,6 @@ class _ChatListWidgetState extends State<ChatListWidget>
   @override
   void dispose() {
     chatController.messageStreamController.close();
-    scrollController.dispose();
     _isNextPageLoading.dispose();
     showPopUp.dispose();
     super.dispose();
