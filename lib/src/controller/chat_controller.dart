@@ -33,6 +33,8 @@ class ChatController {
 
   ScrollController scrollController;
 
+  Timer? _timer;
+
   /// Allow user to show typing indicator defaults to false.
   final ValueNotifier<bool> _showTypingIndicator = ValueNotifier(false);
   final StreamController<Message?> _showReplyViewController =
@@ -83,6 +85,8 @@ class ChatController {
 
   /// Used to dispose stream.
   void dispose() {
+    _timer?.cancel();
+    _timer = null;
     messageStreamController.close();
     _showReplyViewController.close();
   }
@@ -129,14 +133,16 @@ class ChatController {
   }
 
   /// Function to scroll to last messages in chat view
-  void scrollToLastMessage() => Timer(
-        const Duration(milliseconds: 300),
-        () => scrollController.animateTo(
-          scrollController.position.minScrollExtent,
-          curve: Curves.easeIn,
-          duration: const Duration(milliseconds: 300),
-        ),
-      );
+  void scrollToLastMessage() {
+    _timer = Timer(
+      const Duration(milliseconds: 300),
+      () => scrollController.animateTo(
+        scrollController.position.minScrollExtent,
+        curve: Curves.easeIn,
+        duration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
 
   /// Function for loading data while pagination.
   void loadMoreData(List<Message> messageList) {
