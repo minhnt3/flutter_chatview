@@ -136,11 +136,15 @@ class ChatController {
   void scrollToLastMessage() {
     _timer = Timer(
       const Duration(milliseconds: 300),
-      () => scrollController.animateTo(
-        scrollController.position.minScrollExtent,
-        curve: Curves.easeIn,
-        duration: const Duration(milliseconds: 300),
-      ),
+      () {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.minScrollExtent,
+            curve: Curves.easeIn,
+            duration: const Duration(milliseconds: 300),
+          );
+        }
+      },
     );
   }
 
