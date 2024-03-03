@@ -68,8 +68,6 @@ class ReplyMessageWidget extends StatelessWidget {
               left: horizontalPadding,
               bottom: 4,
             ),
-        constraints:
-            BoxConstraints(maxWidth: repliedMessageConfig?.maxWidth ?? 280),
         child: Column(
           crossAxisAlignment:
               replyBySender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -103,10 +101,6 @@ class ReplyMessageWidget extends StatelessWidget {
                                 ),
                               )
                             : Container(
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      repliedMessageConfig?.maxWidth ?? 280,
-                                ),
                                 padding: repliedMessageConfig?.padding ??
                                     const EdgeInsets.symmetric(
                                       vertical: 8,
