@@ -65,7 +65,7 @@ class Data {
       ),
       status: MessageStatus.read,
       replyMessage: const ReplyMessage(
-        message: "Can you write 0905556476 the time place of the meeting ?Can you write the time place of the meeting?Can you write the time place of the meeting?",
+        message: "Can you write 0905556476 the time place of the meeting ? Can you write the time place of the meet ? Can you write the time place of the meeting?",
         replyTo: '2',
         replyBy: '2',
         messageId: '4',
@@ -77,8 +77,8 @@ class Data {
       createdAt: DateTime.now(),
       sendBy: '1',
       status: MessageStatus.delivered,
-      replyMessage: const ReplyMessage(
-        message: "Done!!!!!!",
+      replyMessage: ReplyMessage(
+        message: "Done!!!!!!" * 100,
         replyTo: '2',
         replyBy: '1',
         messageId: '8',
