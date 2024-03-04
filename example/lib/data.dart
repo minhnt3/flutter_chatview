@@ -49,7 +49,7 @@ class Data {
     ),
     Message(
       id: '7',
-      message: "I guess ntminhdn@gmail.com Simform will reply",
+      message: "https://google.com",
       createdAt: DateTime.now(),
       sendBy: '4',
       status: MessageStatus.read,

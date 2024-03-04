@@ -230,11 +230,13 @@ class _ChatScreenState extends State<ChatScreen> {
             bodyStyle: TextStyle(color: Colors.white),
             titleStyle: TextStyle(color: Colors.white),
           ),
+          repliedBackgroundColor: Colors.green,
           receiptsWidgetConfig:
               ReceiptsWidgetConfig(showReceiptsIn: ShowReceiptsIn.all),
           color: Colors.black,
         ),
         inComingChatBubbleConfig: ChatBubble(
+          repliedBackgroundColor: Colors.blue,
           linkPreviewConfig: const LinkPreviewConfiguration(
             linkStyle: TextStyle(
               color: Color(0xff9f85ff),

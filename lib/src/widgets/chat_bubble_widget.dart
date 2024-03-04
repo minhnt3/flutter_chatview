@@ -370,9 +370,18 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                               bottomRight: isMessageBySender
                                   ? const Radius.circular(0)
                                   : const Radius.circular(10)),
+                          // HERE
                           color: isMessageBySender
-                              ? Colors.black
-                              : const Color(0xFFEBEAF4),
+                              ? (widget
+                                      .chatBubbleConfig
+                                      ?.outgoingChatBubbleConfig
+                                      ?.repliedBackgroundColor ??
+                                  Colors.black)
+                              : (widget
+                                      .chatBubbleConfig
+                                      ?.inComingChatBubbleConfig
+                                      ?.repliedBackgroundColor ??
+                                  const Color(0xFFEBEAF4)),
                         ),
                         child: Column(
                           crossAxisAlignment: isMessageBySender
