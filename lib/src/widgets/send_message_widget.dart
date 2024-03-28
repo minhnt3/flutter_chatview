@@ -256,18 +256,17 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
   }
 
   Widget get _imageReplyMessageView {
-    return Row(
+    return const Row(
       children: [
         Icon(
           Icons.photo,
           size: 20,
-          color: widget.sendMessageConfig?.replyMessageColor ??
-              Colors.grey.shade700,
+          color: Colors.white,
         ),
         Text(
           PackageStrings.photo,
           style: TextStyle(
-            color: widget.sendMessageConfig?.replyMessageColor ?? Colors.black,
+            color: Colors.white,
           ),
         ),
       ],

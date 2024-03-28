@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
 import 'package:chatview/src/utils/package_strings.dart';
@@ -82,140 +81,135 @@ class ReplyMessageWidget extends StatelessWidget {
                   Flexible(
                     child: Opacity(
                         opacity: repliedMessageConfig?.opacity ?? 0.8,
-                        child: message.replyMessage.messageType.isImage
-                            ? Container(
-                                height: repliedMessageConfig
-                                        ?.repliedImageMessageHeight ??
-                                    100,
-                                width: repliedMessageConfig
-                                        ?.repliedImageMessageWidth ??
-                                    80,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(replyMessage),
-                                    fit: BoxFit.fill,
-                                  ),
-                                  borderRadius:
-                                      repliedMessageConfig?.borderRadius ??
-                                          BorderRadius.circular(14),
-                                ),
-                              )
-                            : Container(
-                                padding: repliedMessageConfig?.padding ??
-                                    const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                      horizontal: 12,
-                                    ),
-                                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                decoration: BoxDecoration(
-                                  borderRadius: _borderRadius(
-                                    replyMessage: replyMessage,
-                                    replyBySender: replyBySender,
-                                  ),
-                                  color: replyBySender
-                                      ? const Color(0XFF595959)
-                                      : const Color(0XFFCBCAEC),
-                                ),
-                                child: message.replyMessage.messageType.isVoice
-                                    ? Row(
-                                        mainAxisSize: MainAxisSize.min,
+                        child: Container(
+                          padding: repliedMessageConfig?.padding ??
+                              const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 12,
+                              ),
+                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: _borderRadius(
+                              replyMessage: replyMessage,
+                              replyBySender: replyBySender,
+                            ),
+                            color: replyBySender
+                                ? const Color(0XFF595959)
+                                : const Color(0XFFCBCAEC),
+                          ),
+                          child: replyBySender
+                              ? Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          Icon(
-                                            Icons.mic,
-                                            color: repliedMessageConfig
-                                                    ?.micIconColor ??
-                                                Colors.white,
-                                          ),
-                                          const SizedBox(width: 2),
-                                          if (message.replyMessage
-                                                  .voiceMessageDuration !=
-                                              null)
-                                            Text(
-                                              message.replyMessage
-                                                  .voiceMessageDuration!
-                                                  .toHHMMSS(),
-                                              style: repliedMessageConfig
-                                                  ?.textStyle,
+                                          Text(
+                                            "$replyTitle",
+                                            style: const TextStyle(
+                                              color: Color(0xFFDEDEDE),
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                        ],
-                                      )
-                                    : replyBySender
-                                        ? Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: [
-                                                    Text(
-                                                      "$replyTitle",
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xFFDEDEDE),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      replyMessage,
-                                                      textAlign: TextAlign.end,
-                                                      style: repliedMessageConfig
-                                                              ?.textStyle ??
-                                                          textTheme.bodyMedium!
-                                                              .copyWith(
-                                                                  color: Colors
-                                                                      .black),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 5),
-                                              if (replyBySender)
-                                                VerticalLine(
-                                                  verticalBarWidth:
-                                                      repliedMessageConfig
-                                                          ?.verticalBarWidth,
-                                                  verticalBarColor:
-                                                      Colors.white,
-                                                  leftPadding: 4,
-                                                ),
-                                            ],
-                                          )
-                                        : Row(
-                                            children: [
-                                              VerticalLine(
-                                                verticalBarWidth:
-                                                    repliedMessageConfig
-                                                        ?.verticalBarWidth,
-                                                verticalBarColor: Colors.black,
-                                                leftPadding: 4,
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Flexible(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "$replyTitle",
-                                                      style: const TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(replyMessage,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black)),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
                                           ),
-                              )),
+                                          message.replyMessage.messageType
+                                                  .isImage
+                                              ? Container(
+                                                  height: repliedMessageConfig
+                                                          ?.repliedImageMessageHeight ??
+                                                      100,
+                                                  width: repliedMessageConfig
+                                                          ?.repliedImageMessageWidth ??
+                                                      80,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          replyMessage),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    borderRadius:
+                                                        repliedMessageConfig
+                                                                ?.borderRadius ??
+                                                            BorderRadius
+                                                                .circular(14),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  replyMessage,
+                                                  textAlign: TextAlign.end,
+                                                  style: repliedMessageConfig
+                                                          ?.textStyle ??
+                                                      textTheme.bodyMedium!
+                                                          .copyWith(
+                                                              color:
+                                                                  Colors.black),
+                                                ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    if (replyBySender)
+                                      VerticalLine(
+                                        verticalBarWidth: repliedMessageConfig
+                                            ?.verticalBarWidth,
+                                        verticalBarColor: Colors.white,
+                                        leftPadding: 4,
+                                      ),
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    VerticalLine(
+                                      verticalBarWidth: repliedMessageConfig
+                                          ?.verticalBarWidth,
+                                      verticalBarColor: Colors.black,
+                                      leftPadding: 4,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "$replyTitle",
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          message.replyMessage.messageType
+                                                  .isImage
+                                              ? Container(
+                                                  height: repliedMessageConfig
+                                                          ?.repliedImageMessageHeight ??
+                                                      100,
+                                                  width: repliedMessageConfig
+                                                          ?.repliedImageMessageWidth ??
+                                                      80,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          replyMessage),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    borderRadius:
+                                                        repliedMessageConfig
+                                                                ?.borderRadius ??
+                                                            BorderRadius
+                                                                .circular(14),
+                                                  ),
+                                                )
+                                              : Text(replyMessage,
+                                                  textAlign: TextAlign.start,
+                                                  style: const TextStyle(
+                                                      color: Colors.black)),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        )),
                   ),
                 ],
               ),
