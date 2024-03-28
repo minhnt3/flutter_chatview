@@ -192,7 +192,7 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
                                     ),
                                     if (state.messageType.isVoice)
                                       _voiceReplyMessageView
-                                    else if (state.messageType.isImage)
+                                    else if (state.messageType == MessageType.custom)
                                       _imageReplyMessageView
                                     else
                                       Text(
