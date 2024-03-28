@@ -24,6 +24,7 @@ import 'package:chatview/src/models/models.dart';
 import 'package:chatview/src/utils/package_strings.dart';
 import 'package:flutter/material.dart';
 
+import '../../chatview.dart';
 import '../utils/constants/constants.dart';
 import 'chat_view_inherited_widget.dart';
 import 'vertical_line.dart';
@@ -112,8 +113,8 @@ class ReplyMessageWidget extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          message.replyMessage.messageType
-                                                  .isImage
+                                          message.replyMessage.messageType ==
+                                                  MessageType.custom
                                               ? Container(
                                                   height: repliedMessageConfig
                                                           ?.repliedImageMessageHeight ??
@@ -178,8 +179,8 @@ class ReplyMessageWidget extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          message.replyMessage.messageType
-                                                  .isImage
+                                          message.replyMessage.messageType ==
+                                                  MessageType.custom
                                               ? Container(
                                                   height: repliedMessageConfig
                                                           ?.repliedImageMessageHeight ??
