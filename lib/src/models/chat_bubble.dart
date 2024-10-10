@@ -26,6 +26,8 @@ class ChatBubble {
   /// Used for giving color of chat bubble.
   final Color? color;
 
+  final Color? repliedBackgroundColor;
+
   /// Used for giving border radius of chat bubble.
   final BorderRadiusGeometry? borderRadius;
 
@@ -54,6 +56,7 @@ class ChatBubble {
 
   const ChatBubble({
     this.color,
+    this.repliedBackgroundColor,
     this.borderRadius,
     this.textStyle,
     this.padding,

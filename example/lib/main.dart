@@ -41,7 +41,6 @@ class _ChatScreenState extends State<ChatScreen> {
     profilePhoto: Data.profileImage,
   );
   final _chatController = ChatController(
-    initialMessageList: Data.messageList,
     scrollController: ScrollController(),
     chatUsers: [
       ChatUser(
@@ -65,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
         profilePhoto: Data.profileImage,
       ),
     ],
-  );
+  )..messageList = Data.messageList;
 
   void _showHideTypingIndicator() {
     _chatController.setTypingIndicator = !_chatController.showTypingIndicator;
@@ -266,6 +265,10 @@ class _ChatScreenState extends State<ChatScreen> {
         swipeToReplyConfig: SwipeToReplyConfiguration(
           replyIconColor: theme.swipeToReplyIconColor,
         ),
+        onMoreMenuBuilder: (Message, int) {
+          return SizedBox();
+        },
+        items: [],
       ),
     );
   }
@@ -287,11 +290,11 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
     Future.delayed(const Duration(milliseconds: 300), () {
-      _chatController.initialMessageList.last.setStatus =
+      _chatController.messageList.last.setStatus =
           MessageStatus.undelivered;
     });
     Future.delayed(const Duration(seconds: 1), () {
-      _chatController.initialMessageList.last.setStatus = MessageStatus.read;
+      _chatController.messageList.last.setStatus = MessageStatus.read;
     });
   }
 

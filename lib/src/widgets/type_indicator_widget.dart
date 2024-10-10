@@ -193,6 +193,8 @@ class _TypingIndicatorState extends State<TypingIndicator>
 
   @override
   Widget build(BuildContext context) {
+    return const SizedBox();
+
     return AnimatedBuilder(
       animation: _indicatorSpaceAnimation,
       builder: (context, child) {

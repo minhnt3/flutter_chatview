@@ -108,10 +108,17 @@ class Data {
     ),
     Message(
       id: '12',
-      message: "🤩🤩",
+      message: "Awesome!!",
       createdAt: DateTime.now(),
       sendBy: '2',
       status: MessageStatus.read,
+      replyMessage: const ReplyMessage(
+        message: "https://miro.medium.com/max/1000/0*s7of7kWnf9fDg4XM.jpeg",
+        replyTo: '1',
+        replyBy: '2',
+        messageId: '11',
+        messageType: MessageType.image,
+      ),
     ),
   ];
 }

@@ -25,6 +25,7 @@ import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
 import 'package:chatview/src/widgets/chatview_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart';
+
 import '../values/custom_time_messages.dart';
 import 'send_message_widget.dart';
 
@@ -33,6 +34,7 @@ class ChatView extends StatefulWidget {
     Key? key,
     required this.chatController,
     required this.currentUser,
+    required this.onMoreMenuBuilder,
     this.onSendTap,
     this.profileCircleConfig,
     this.chatBubbleConfig,
@@ -54,11 +56,21 @@ class ChatView extends StatefulWidget {
     required this.chatViewState,
     ChatViewStateConfiguration? chatViewStateConfig,
     this.featureActiveConfig = const FeatureActiveConfig(),
+    required this.items,
+    this.onTextChanged,
+    this.onMenuToggle,
+    this.onMenuItemPressed,
   })  : chatBackgroundConfig =
             chatBackgroundConfig ?? const ChatBackgroundConfiguration(),
         chatViewStateConfig =
             chatViewStateConfig ?? const ChatViewStateConfiguration(),
         super(key: key);
+
+  final List<MenuItem> items;
+  final void Function(String text)? onTextChanged;
+  final void Function(bool)? onMenuToggle;
+  final Widget Function(Message, int) onMoreMenuBuilder;
+  final void Function(ActionType)? onMenuItemPressed;
 
   /// Provides configuration related to user profile circle avatar.
   final ProfileCircleConfiguration? profileCircleConfig;
@@ -167,6 +179,9 @@ class _ChatViewState extends State<ChatView>
     setLocaleMessages('en', ReceiptsCustomMessages());
     // Adds current user in users list.
     chatController.chatUsers.add(widget.currentUser);
+    chatController.showReplyViewController.stream.listen((message) {
+      showReplyView(message!);
+    });
   }
 
   @override
@@ -247,14 +262,18 @@ class _ChatViewState extends State<ChatView>
                           repliedMessageConfig: widget.repliedMessageConfig,
                           swipeToReplyConfig: widget.swipeToReplyConfig,
                           onChatListTap: widget.onChatListTap,
-                          assignReplyMessage: (message) => _sendMessageKey
-                              .currentState
-                              ?.assignReplyMessage(message),
+                          onMoreMenuBuilder: widget.onMoreMenuBuilder,
+                          assignReplyMessage: (message) =>
+                              showReplyView(message),
                         );
                       },
                     ),
                   if (featureActiveConfig.enableTextField)
                     SendMessageWidget(
+                      items: widget.items,
+                      onTextChanged: widget.onTextChanged,
+                      onMenuToggle: widget.onMenuToggle,
+                      onMenuItemPressed: widget.onMenuItemPressed,
                       key: _sendMessageKey,
                       chatController: chatController,
                       sendMessageBuilder: widget.sendMessageBuilder,
@@ -272,6 +291,10 @@ class _ChatViewState extends State<ChatView>
         ),
       ),
     );
+  }
+
+  void showReplyView(Message message) {
+    return _sendMessageKey.currentState?.assignReplyMessage(message);
   }
 
   void _onSendTap(

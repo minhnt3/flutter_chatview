@@ -21,18 +21,32 @@
  */
 import 'dart:async';
 
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
 class ChatController {
   /// Represents initial message list in chat which can be add by user.
-  List<Message> initialMessageList;
+  List<Message> _allMessages = [];
 
   ScrollController scrollController;
 
+  Timer? _timer;
+
   /// Allow user to show typing indicator defaults to false.
   final ValueNotifier<bool> _showTypingIndicator = ValueNotifier(false);
+  final StreamController<Message?> _showReplyViewController =
+      StreamController();
+
+  StreamController<Message?> get showReplyViewController =>
+      _showReplyViewController;
+
+  void showReplyView(Message message) {
+    if (_showReplyViewController.isClosed) return;
+    _showReplyViewController.add(message);
+  }
 
   /// TypingIndicator as [ValueNotifier] for [GroupedChatList] widget's typingIndicator [ValueListenableBuilder].
   ///  Use this for listening typing indicators
@@ -57,7 +71,6 @@ class ChatController {
   List<ChatUser> chatUsers;
 
   ChatController({
-    required this.initialMessageList,
     required this.scrollController,
     required this.chatUsers,
   });
@@ -65,13 +78,23 @@ class ChatController {
   /// Represents message stream of chat
   StreamController<List<Message>> messageStreamController = StreamController();
 
+  late Stream<List<Message>> distinctStream =
+      messageStreamController.stream.distinct();
+
+  List<Message> get messageList => _allMessages;
+
   /// Used to dispose stream.
-  void dispose() => messageStreamController.close();
+  void dispose() {
+    _timer?.cancel();
+    _timer = null;
+    messageStreamController.close();
+    _showReplyViewController.close();
+  }
 
   /// Used to add message in message list.
   void addMessage(Message message) {
-    initialMessageList.add(message);
-    messageStreamController.sink.add(initialMessageList);
+    _allMessages.add(message);
+    messageStreamController.sink.add(_allMessages);
   }
 
   /// Function for setting reaction on specific chat bubble
@@ -81,9 +104,9 @@ class ChatController {
     required String userId,
   }) {
     final message =
-        initialMessageList.firstWhere((element) => element.id == messageId);
+        _allMessages.firstWhere((element) => element.id == messageId);
     final reactedUserIds = message.reaction.reactedUserIds;
-    final indexOfMessage = initialMessageList.indexOf(message);
+    final indexOfMessage = _allMessages.indexOf(message);
     final userIndex = reactedUserIds.indexOf(userId);
     if (userIndex != -1) {
       if (message.reaction.reactions[userIndex] == emoji) {
@@ -96,7 +119,7 @@ class ChatController {
       message.reaction.reactions.add(emoji);
       message.reaction.reactedUserIds.add(userId);
     }
-    initialMessageList[indexOfMessage] = Message(
+    _allMessages[indexOfMessage] = Message(
       id: messageId,
       message: message.message,
       createdAt: message.createdAt,
@@ -106,27 +129,51 @@ class ChatController {
       messageType: message.messageType,
       status: message.status,
     );
-    messageStreamController.sink.add(initialMessageList);
+    messageStreamController.sink.add(_allMessages);
   }
 
   /// Function to scroll to last messages in chat view
-  void scrollToLastMessage() => Timer(
-        const Duration(milliseconds: 300),
-        () => scrollController.animateTo(
-          scrollController.position.minScrollExtent,
-          curve: Curves.easeIn,
-          duration: const Duration(milliseconds: 300),
-        ),
-      );
+  void scrollToLastMessage() {
+    _timer = Timer(
+      const Duration(milliseconds: 300),
+      () {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.minScrollExtent,
+            curve: Curves.easeIn,
+            duration: const Duration(milliseconds: 300),
+          );
+        }
+      },
+    );
+  }
 
   /// Function for loading data while pagination.
   void loadMoreData(List<Message> messageList) {
     /// Here, we have passed 0 index as we need to add data before first data
-    initialMessageList.insertAll(0, messageList);
-    messageStreamController.sink.add(initialMessageList);
+    _allMessages.insertAll(0, messageList);
+    messageStreamController.sink.add(_allMessages);
+  }
+
+  set messageList(List<Message> messageList) {
+    if (listEquals(_allMessages, messageList)) {
+      return;
+    }
+
+    _allMessages = messageList;
+    messageStreamController.sink.add(_allMessages);
   }
 
   /// Function for getting ChatUser object from user id
-  ChatUser getUserFromId(String userId) =>
-      chatUsers.firstWhere((element) => element.id == userId);
+  ChatUser? getUserFromId(String userId) =>
+      chatUsers.firstWhereOrNull((element) => element.id == userId);
+}
+
+extension IterableAppend<E> on Iterable<E> {
+  /// Returns a new lazy [Iterable] containing all elements of the given
+  /// [elements] collection and then all elements of this collection.
+  Iterable<E> append(Iterable<E> elements) sync* {
+    yield* this;
+    yield* elements;
+  }
 }

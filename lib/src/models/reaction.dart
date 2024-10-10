@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Reaction {
   Reaction({
     required this.reactions,
@@ -19,4 +21,20 @@ class Reaction {
         'reactions': reactions,
         'reactedUserIds': reactedUserIds,
       };
+
+  @override
+  String toString() =>
+      'Reaction(reactions: $reactions, reactedUserIds: $reactedUserIds)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Reaction &&
+        listEquals(reactions, reactions) &&
+        listEquals(reactedUserIds, reactedUserIds);
+  }
+
+  @override
+  int get hashCode => reactions.hashCode ^ reactedUserIds.hashCode;
 }

@@ -19,13 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/constants/constants.dart';
-import 'link_preview.dart';
+import '../utils/linkifier/phone_number_linkifier.dart';
 import 'reaction_widget.dart';
 
 class TextMessageView extends StatelessWidget {
@@ -33,6 +35,7 @@ class TextMessageView extends StatelessWidget {
     Key? key,
     required this.isMessageBySender,
     required this.message,
+    required this.replyMessage,
     this.chatBubbleMaxWidth,
     this.inComingChatBubbleConfig,
     this.outgoingChatBubbleConfig,
@@ -40,6 +43,8 @@ class TextMessageView extends StatelessWidget {
     this.highlightMessage = false,
     this.highlightColor,
   }) : super(key: key);
+
+  final String replyMessage;
 
   /// Represents current message is sent by current user.
   final bool isMessageBySender;
@@ -85,22 +90,46 @@ class TextMessageView extends StatelessWidget {
               EdgeInsets.fromLTRB(
                   5, 0, 6, message.reaction.reactions.isNotEmpty ? 15 : 2),
           decoration: BoxDecoration(
-            color: highlightMessage ? highlightColor : _color,
+            color: replyMessage.isNotEmpty ? Colors.transparent : _color,
             borderRadius: _borderRadius(textMessage),
           ),
-          child: textMessage.isUrl
-              ? LinkPreview(
-                  linkPreviewConfig: _linkPreviewConfig,
-                  url: textMessage,
-                )
-              : Text(
-                  textMessage,
-                  style: _textStyle ??
-                      textTheme.bodyMedium!.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+          child: SelectableLinkify(
+            contextMenuBuilder: (context, editableTextState) {
+              return AdaptiveTextSelectionToolbar.buttonItems(
+                anchors: editableTextState.contextMenuAnchors,
+                buttonItems: <ContextMenuButtonItem>[
+                  ContextMenuButtonItem(
+                    onPressed: () {
+                      editableTextState
+                          .copySelection(SelectionChangedCause.toolbar);
+                    },
+                    type: ContextMenuButtonType.copy,
+                  ),
+                  ContextMenuButtonItem(
+                    onPressed: () {
+                      editableTextState
+                          .selectAll(SelectionChangedCause.toolbar);
+                    },
+                    type: ContextMenuButtonType.selectAll,
+                  ),
+                ],
+              );
+            },
+            text: utf8.decode(utf8.encode(textMessage)),
+            onOpen: (link) {
+              launchUrl(Uri.parse(link.url));
+            },
+            style: _textStyle ??
+                textTheme.bodyMedium!.copyWith(
+                  color: Colors.white,
+                  fontSize: 16,
                 ),
+            linkifiers: const [
+              UrlLinkifier(),
+              PhoneNumberLinkifier(),
+              EmailLinkifier()
+            ],
+          ),
         ),
         if (message.reaction.reactions.isNotEmpty)
           ReactionWidget(
@@ -131,13 +160,19 @@ class TextMessageView extends StatelessWidget {
 
   BorderRadiusGeometry _borderRadius(String message) => isMessageBySender
       ? outgoingChatBubbleConfig?.borderRadius ??
-          (message.length < 37
-              ? BorderRadius.circular(replyBorderRadius1)
-              : BorderRadius.circular(replyBorderRadius2))
+          const BorderRadius.only(
+            topLeft: Radius.circular(replyBorderRadius1),
+            topRight: Radius.circular(replyBorderRadius1),
+            bottomLeft: Radius.circular(replyBorderRadius1),
+            bottomRight: Radius.circular(0),
+          )
       : inComingChatBubbleConfig?.borderRadius ??
-          (message.length < 29
-              ? BorderRadius.circular(replyBorderRadius1)
-              : BorderRadius.circular(replyBorderRadius2));
+          const BorderRadius.only(
+            topLeft: Radius.circular(replyBorderRadius1),
+            topRight: Radius.circular(replyBorderRadius1),
+            bottomLeft: Radius.circular(0),
+            bottomRight: Radius.circular(replyBorderRadius1),
+          );
 
   Color get _color => isMessageBySender
       ? outgoingChatBubbleConfig?.color ?? Colors.purple

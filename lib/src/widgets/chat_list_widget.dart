@@ -39,6 +39,7 @@ class ChatListWidget extends StatefulWidget {
     required this.showTypingIndicator,
     required this.assignReplyMessage,
     required this.replyMessage,
+    required this.onMoreMenuBuilder,
     this.loadingWidget,
     this.reactionPopupConfig,
     this.messageConfig,
@@ -52,6 +53,8 @@ class ChatListWidget extends StatefulWidget {
     this.isLastPage,
     this.onChatListTap,
   }) : super(key: key);
+
+  final Widget Function(Message, int) onMoreMenuBuilder;
 
   /// Provides controller for accessing few function for running chat.
   final ChatController chatController;
@@ -120,7 +123,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
 
   ChatController get chatController => widget.chatController;
 
-  List<Message> get messageList => chatController.initialMessageList;
+  List<Message> get messageList => chatController.messageList;
 
   ScrollController get scrollController => chatController.scrollController;
 
@@ -169,13 +172,13 @@ class _ChatListWidgetState extends State<ChatListWidget>
           builder: (_, isNextPageLoading, child) {
             if (isNextPageLoading &&
                 (featureActiveConfig?.enablePagination ?? false)) {
-              return SizedBox(
-                height: Scaffold.of(context).appBarMaxHeight,
-                child: Center(
-                  child:
-                      widget.loadingWidget ?? const CircularProgressIndicator(),
-                ),
-              );
+              return widget.loadingWidget ??
+                  SizedBox(
+                    height: Scaffold.of(context).appBarMaxHeight,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
             } else {
               return const SizedBox.shrink();
             }
@@ -188,6 +191,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
               return Stack(
                 children: [
                   ChatGroupedListWidget(
+                    onMoreMenuBuilder: widget.onMoreMenuBuilder,
                     showPopUp: showPopupValue,
                     showTypingIndicator: showTypingIndicator,
                     scrollController: scrollController,
@@ -312,7 +316,6 @@ class _ChatListWidgetState extends State<ChatListWidget>
   @override
   void dispose() {
     chatController.messageStreamController.close();
-    scrollController.dispose();
     _isNextPageLoading.dispose();
     showPopUp.dispose();
     super.dispose();

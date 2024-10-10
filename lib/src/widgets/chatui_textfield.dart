@@ -41,7 +41,16 @@ class ChatUITextField extends StatefulWidget {
     required this.onPressed,
     required this.onRecordingComplete,
     required this.onImageSelected,
+    required this.items,
+    this.onTextChanged,
+    this.onMenuToggle,
+    this.onMenuItemPressed,
   }) : super(key: key);
+
+  final List<MenuItem> items;
+  final void Function(String text)? onTextChanged;
+  final void Function(bool)? onMenuToggle;
+  final void Function(ActionType)? onMenuItemPressed;
 
   /// Provides configuration of default text field in chat.
   final SendMessageConfiguration? sendMessageConfig;
@@ -65,7 +74,8 @@ class ChatUITextField extends StatefulWidget {
   State<ChatUITextField> createState() => _ChatUITextFieldState();
 }
 
-class _ChatUITextFieldState extends State<ChatUITextField> {
+class _ChatUITextFieldState extends State<ChatUITextField>
+    with SingleTickerProviderStateMixin {
   final ValueNotifier<String> _inputText = ValueNotifier('');
 
   final ImagePicker _imagePicker = ImagePicker();
@@ -108,6 +118,11 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
         defaultTargetPlatform == TargetPlatform.android) {
       controller = RecorderController();
     }
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   @override
@@ -116,6 +131,7 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
     composingStatus.dispose();
     isRecording.dispose();
     _inputText.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -126,156 +142,229 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
     });
   }
 
+  bool isOpen = false;
+  late AnimationController _animationController;
+
+  void _toggleMenu() {
+    setState(() {
+      isOpen = !isOpen;
+      widget.onMenuToggle?.call(isOpen);
+      if (isOpen) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  static const itemHeight = 48.0;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding:
-          textFieldConfig?.padding ?? const EdgeInsets.symmetric(horizontal: 6),
-      margin: textFieldConfig?.margin,
-      decoration: BoxDecoration(
-        borderRadius: textFieldConfig?.borderRadius ??
-            BorderRadius.circular(textFieldBorderRadius),
-        color: sendMessageConfig?.textFieldBackgroundColor ?? Colors.white,
-      ),
-      child: ValueListenableBuilder<bool>(
-        valueListenable: isRecording,
-        builder: (_, isRecordingValue, child) {
-          return Row(
-            children: [
-              if (isRecordingValue && controller != null && !kIsWeb)
-                AudioWaveforms(
-                  size: Size(MediaQuery.of(context).size.width * 0.75, 50),
-                  recorderController: controller!,
-                  margin: voiceRecordingConfig?.margin,
-                  padding: voiceRecordingConfig?.padding ??
-                      const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: voiceRecordingConfig?.decoration ??
-                      BoxDecoration(
-                        color: voiceRecordingConfig?.backgroundColor,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                  waveStyle: voiceRecordingConfig?.waveStyle ??
-                      WaveStyle(
-                        extendWaveform: true,
-                        showMiddleLine: false,
-                        waveColor: voiceRecordingConfig?.waveStyle?.waveColor ??
-                            Colors.black,
-                      ),
-                )
-              else
-                Expanded(
-                  child: TextField(
-                    focusNode: widget.focusNode,
-                    controller: widget.textEditingController,
-                    style: textFieldConfig?.textStyle ??
-                        const TextStyle(color: Colors.white),
-                    maxLines: textFieldConfig?.maxLines ?? 5,
-                    minLines: textFieldConfig?.minLines ?? 1,
-                    keyboardType: textFieldConfig?.textInputType,
-                    inputFormatters: textFieldConfig?.inputFormatters,
-                    onChanged: _onChanged,
-                    textCapitalization: textFieldConfig?.textCapitalization ??
-                        TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText:
-                          textFieldConfig?.hintText ?? PackageStrings.message,
-                      fillColor: sendMessageConfig?.textFieldBackgroundColor ??
-                          Colors.white,
-                      filled: true,
-                      hintStyle: textFieldConfig?.hintStyle ??
-                          TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey.shade600,
-                            letterSpacing: 0.25,
-                          ),
-                      contentPadding: textFieldConfig?.contentPadding ??
-                          const EdgeInsets.symmetric(horizontal: 6),
-                      border: _outLineBorder,
-                      focusedBorder: _outLineBorder,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.transparent),
-                        borderRadius: textFieldConfig?.borderRadius ??
-                            BorderRadius.circular(textFieldBorderRadius),
-                      ),
+    return Column(
+      children: [
+        AnimatedContainer(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          duration: const Duration(milliseconds: 200),
+          height: isOpen ? itemHeight * (widget.items.length) + 8 : 0,
+          //ignore:avoid-shrink-wrap-in-lists
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemCount: widget.items.length,
+            itemBuilder: (context, index) {
+              final item = widget.items[index];
+
+              return TextButton(
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    const Size(double.infinity, itemHeight),
+                  ),
+                ),
+                onPressed: () {
+                  _toggleMenu();
+                  item.action();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      item.text,
+                      style: const TextStyle(color: Colors.black),
                     ),
                   ),
                 ),
-              ValueListenableBuilder<String>(
-                valueListenable: _inputText,
-                builder: (_, inputTextValue, child) {
-                  if (inputTextValue.isNotEmpty) {
-                    return IconButton(
-                      color: sendMessageConfig?.defaultSendButtonColor ??
-                          Colors.green,
-                      onPressed: () {
-                        widget.onPressed();
-                        _inputText.value = '';
-                      },
-                      icon: sendMessageConfig?.sendButtonIcon ??
-                          const Icon(Icons.send),
-                    );
-                  } else {
-                    return Row(
-                      children: [
-                        if (!isRecordingValue) ...[
-                          if (sendMessageConfig?.enableCameraImagePicker ??
-                              true)
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              onPressed: () => _onIconPressed(
-                                ImageSource.camera,
-                                config:
-                                    sendMessageConfig?.imagePickerConfiguration,
+              );
+            },
+          ),
+        ),
+        if (isOpen) const SizedBox(height: 1, child: Divider()),
+        Container(
+          color: Colors.white,
+          // height: Dimens.d56.responsive(),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(
+            top: 12,
+            bottom: 12,
+            left: 12,
+            right: 12,
+          ),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: isRecording,
+            builder: (_, isRecordingValue, child) {
+              return Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      _toggleMenu();
+                    },
+                    icon: AnimatedIcon(
+                      icon: AnimatedIcons.menu_close,
+                      progress: _animationController,
+                      size: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                  if (isRecordingValue && controller != null && !kIsWeb)
+                    AudioWaveforms(
+                      size: Size(MediaQuery.of(context).size.width * 0.75, 50),
+                      recorderController: controller!,
+                      margin: voiceRecordingConfig?.margin,
+                      padding: voiceRecordingConfig?.padding ??
+                          const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: voiceRecordingConfig?.decoration ??
+                          BoxDecoration(
+                            color: voiceRecordingConfig?.backgroundColor,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                      waveStyle: voiceRecordingConfig?.waveStyle ??
+                          WaveStyle(
+                            extendWaveform: true,
+                            showMiddleLine: false,
+                            waveColor:
+                                voiceRecordingConfig?.waveStyle?.waveColor ??
+                                    Colors.black,
+                          ),
+                    )
+                  else
+                    Expanded(
+                      child: TextField(
+                        focusNode: widget.focusNode,
+                        controller: widget.textEditingController,
+                        style: textFieldConfig?.textStyle ??
+                            const TextStyle(color: Colors.black),
+                        maxLines: textFieldConfig?.maxLines ?? 3,
+                        minLines: textFieldConfig?.minLines ?? 1,
+                        keyboardType: textFieldConfig?.textInputType,
+                        inputFormatters: textFieldConfig?.inputFormatters,
+                        onChanged: _onChanged,
+                        textCapitalization:
+                            textFieldConfig?.textCapitalization ??
+                                TextCapitalization.sentences,
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          hintText: textFieldConfig?.hintText ??
+                              PackageStrings.message,
+                          fillColor:
+                              sendMessageConfig?.textFieldBackgroundColor ??
+                                  Colors.white,
+                          filled: true,
+                          hintStyle: textFieldConfig?.hintStyle ??
+                              const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                                letterSpacing: 0.25,
                               ),
-                              icon: imagePickerIconsConfig
-                                      ?.cameraImagePickerIcon ??
-                                  Icon(
-                                    Icons.camera_alt_outlined,
-                                    color:
-                                        imagePickerIconsConfig?.cameraIconColor,
-                                  ),
-                            ),
-                          if (sendMessageConfig?.enableGalleryImagePicker ??
-                              true)
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              onPressed: () => _onIconPressed(
-                                ImageSource.gallery,
-                                config:
-                                    sendMessageConfig?.imagePickerConfiguration,
-                              ),
-                              icon: imagePickerIconsConfig
-                                      ?.galleryImagePickerIcon ??
-                                  Icon(
-                                    Icons.image,
-                                    color: imagePickerIconsConfig
-                                        ?.galleryIconColor,
-                                  ),
-                            ),
-                        ],
-                        if (sendMessageConfig?.allowRecordingVoice ??
-                            true &&
-                                Platform.isIOS &&
-                                Platform.isAndroid &&
-                                !kIsWeb)
-                          IconButton(
-                            onPressed: _recordOrStop,
-                            icon: (isRecordingValue
-                                    ? voiceRecordingConfig?.micIcon
-                                    : voiceRecordingConfig?.stopIcon) ??
-                                Icon(isRecordingValue ? Icons.stop : Icons.mic),
-                            color: voiceRecordingConfig?.recorderIconColor,
-                          )
-                      ],
-                    );
-                  }
-                },
-              ),
-            ],
-          );
-        },
-      ),
+                          contentPadding: textFieldConfig?.contentPadding ??
+                              const EdgeInsets.symmetric(horizontal: 6),
+                          border: _outLineBorder,
+                          focusedBorder: _outLineBorder,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: textFieldConfig?.borderRadius ??
+                                BorderRadius.circular(textFieldBorderRadius),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ValueListenableBuilder<String>(
+                    valueListenable: _inputText,
+                    builder: (_, inputTextValue, child) {
+                      if (inputTextValue.isNotEmpty) {
+                        return IconButton(
+                          color: sendMessageConfig?.defaultSendButtonColor ??
+                              Colors.black,
+                          onPressed: () {
+                            widget.onPressed();
+                            _inputText.value = '';
+                          },
+                          icon: sendMessageConfig?.sendButtonIcon ??
+                              const Icon(Icons.send),
+                        );
+                      } else {
+                        return Row(
+                          children: [
+                            if (!isRecordingValue) ...[
+                              if (sendMessageConfig?.enableCameraImagePicker ??
+                                  true)
+                                IconButton(
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () => widget.onMenuItemPressed
+                                      ?.call(ActionType.camera),
+                                  icon: imagePickerIconsConfig
+                                          ?.cameraImagePickerIcon ??
+                                      const Icon(
+                                        Icons.camera_alt_outlined,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              if (sendMessageConfig?.enableGalleryImagePicker ??
+                                  true)
+                                IconButton(
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () => widget.onMenuItemPressed
+                                      ?.call(ActionType.gallery),
+                                  icon: imagePickerIconsConfig
+                                          ?.galleryImagePickerIcon ??
+                                      const Icon(
+                                        Icons.image,
+                                        color: Colors.black,
+                                      ),
+                                ),
+                            ],
+                            if (sendMessageConfig?.allowRecordingVoice ??
+                                true &&
+                                    Platform.isIOS &&
+                                    Platform.isAndroid &&
+                                    !kIsWeb)
+                              IconButton(
+                                onPressed: _recordOrStop,
+                                icon: (isRecordingValue
+                                        ? voiceRecordingConfig?.micIcon
+                                        : voiceRecordingConfig?.stopIcon) ??
+                                    Icon(isRecordingValue
+                                        ? Icons.stop
+                                        : Icons.mic),
+                                color: voiceRecordingConfig?.recorderIconColor,
+                              )
+                          ],
+                        );
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -320,6 +409,7 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
   }
 
   void _onChanged(String inputText) {
+    widget.onTextChanged?.call(inputText);
     debouncer.run(() {
       composingStatus.value = TypeWriterStatus.typed;
     }, () {
@@ -327,4 +417,19 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
     });
     _inputText.value = inputText;
   }
+}
+
+class MenuItem {
+  final String text;
+  final VoidCallback action;
+
+  const MenuItem({
+    required this.text,
+    required this.action,
+  });
+}
+
+enum ActionType {
+  camera,
+  gallery,
 }

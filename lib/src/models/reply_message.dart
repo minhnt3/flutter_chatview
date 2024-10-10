@@ -64,4 +64,33 @@ class ReplyMessage {
         'id': messageId,
         'voiceMessageDuration': voiceMessageDuration,
       };
+
+  @override
+  String toString() {
+    return 'ReplyMessage(message: $message, replyBy: $replyBy, replyTo: $replyTo, messageType: $messageType, voiceMessageDuration: $voiceMessageDuration, messageId: $messageId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is! ReplyMessage) return false;
+
+    return other.message == message &&
+        other.replyBy == replyBy &&
+        other.replyTo == replyTo &&
+        other.messageType == messageType &&
+        other.voiceMessageDuration == voiceMessageDuration &&
+        other.messageId == messageId;
+  }
+
+  @override
+  int get hashCode {
+    return message.hashCode ^
+        replyBy.hashCode ^
+        replyTo.hashCode ^
+        messageType.hashCode ^
+        voiceMessageDuration.hashCode ^
+        messageId.hashCode;
+  }
 }

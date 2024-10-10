@@ -90,6 +90,11 @@ class Message {
     _status.value = messageStatus;
   }
 
+  @override
+  String toString() {
+    return 'Message(id: $id, key: $key, message: $message, createdAt: $createdAt, sendBy: $sendBy, replyMessage: $replyMessage, reaction: $reaction, messageType: $messageType, voiceMessageDuration: $voiceMessageDuration, status: $status)';
+  }
+
   factory Message.fromJson(Map<String, dynamic> json) => Message(
       id: json["id"],
       message: json["message"],
@@ -112,4 +117,34 @@ class Message {
         'voice_message_duration': voiceMessageDuration,
         'status': status.name
       };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is! Message) return false;
+
+    return other.id == id &&
+        other.message == message &&
+        other.createdAt == createdAt &&
+        other.sendBy == sendBy &&
+        other.replyMessage == replyMessage &&
+        other.reaction == reaction &&
+        other.messageType == messageType &&
+        other.voiceMessageDuration == voiceMessageDuration &&
+        other.status == status;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        message.hashCode ^
+        createdAt.hashCode ^
+        sendBy.hashCode ^
+        replyMessage.hashCode ^
+        reaction.hashCode ^
+        messageType.hashCode ^
+        voiceMessageDuration.hashCode ^
+        status.hashCode;
+  }
 }
